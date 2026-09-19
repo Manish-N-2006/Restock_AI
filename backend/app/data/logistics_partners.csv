@@ -1,0 +1,4 @@
+partner_id,partner_name,cost_per_km,base_cost,average_eta_minutes,capacity_units,supports_cold_chain
+PARTNER_1,Speedy Deliveries,1.5,5.0,30,500,false
+PARTNER_2,Cold Chain Logistics,2.0,10.0,45,200,true
+PARTNER_3,Bulk Haulers,1.0,15.0,60,1000,false

@@ -1,0 +1,6 @@
+store_id,store_name,latitude,longitude,address,supports_cold_chain
+STORE_A,Main Hub,34.0522,-118.2437,123 Main St,true
+STORE_B,North Branch,34.1425,-118.2551,456 North Ave,true
+STORE_C,South Branch,33.9525,-118.2551,789 South Ave,false
+STORE_D,East Branch,34.0522,-118.1437,321 East St,false
+STORE_E,West Branch,34.0522,-118.3437,654 West St,true

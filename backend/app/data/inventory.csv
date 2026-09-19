@@ -1,0 +1,31 @@
+sku_id,product_name,store_id,quantity,cost_price,selling_price,days_to_expire,daily_sales_7d,temperature_class,return_allowed,supplier_return_value
+YOG-001,Yogurt 500g,STORE_A,50,120,160,2,4,2-8 C,false,
+YOG-001,Yogurt 500g,STORE_B,5,120,160,5,40,2-8 C,false,
+MLK-001,Fresh Milk 1L,STORE_A,30,80,110,1,5,2-8 C,true,40
+MLK-001,Fresh Milk 1L,STORE_C,100,80,110,3,15,2-8 C,true,40
+BRD-001,Whole Wheat Bread,STORE_A,20,40,60,4,10,Ambient,false,
+BRD-001,Whole Wheat Bread,STORE_B,50,40,60,3,5,Ambient,false,
+APL-001,Red Apples 1kg,STORE_A,40,90,140,7,8,Ambient,false,
+APL-001,Red Apples 1kg,STORE_C,20,90,140,7,12,Ambient,false,
+Cereal-001,Corn Flakes 500g,STORE_B,15,150,220,180,2,Ambient,false,
+Cereal-001,Corn Flakes 500g,STORE_D,40,150,220,180,1,Ambient,false,
+SODA-001,Cola 2L,STORE_E,120,50,90,300,10,Ambient,true,30
+SODA-001,Cola 2L,STORE_A,10,50,90,300,15,Ambient,true,30
+SNK-001,Potato Chips 150g,STORE_A,60,30,55,90,8,Ambient,false,
+SNK-001,Potato Chips 150g,STORE_B,0,30,55,90,10,Ambient,false,
+ICE-001,Vanilla Ice Cream 1L,STORE_A,25,200,350,150,3,-18 C,false,
+ICE-001,Vanilla Ice Cream 1L,STORE_C,10,200,350,150,5,-18 C,false,
+MEAT-001,Chicken Breast 500g,STORE_A,15,180,280,3,8,2-8 C,false,
+MEAT-001,Chicken Breast 500g,STORE_D,50,180,280,2,2,2-8 C,false,
+CHE-001,Cheddar Cheese 200g,STORE_A,35,140,210,14,3,2-8 C,false,
+CHE-001,Cheddar Cheese 200g,STORE_E,5,140,210,14,7,2-8 C,false,
+FRT-001,Bananas 1kg,STORE_A,60,60,90,5,15,Ambient,false,
+FRT-001,Bananas 1kg,STORE_B,15,60,90,5,10,Ambient,false,
+FRT-001,Bananas 1kg,STORE_C,80,60,90,2,5,Ambient,false,
+VEG-001,Tomatoes 1kg,STORE_A,45,40,70,6,12,Ambient,false,
+VEG-001,Tomatoes 1kg,STORE_D,20,40,70,6,8,Ambient,false,
+VEG-001,Tomatoes 1kg,STORE_E,90,40,70,3,6,Ambient,false,
+CHOC-001,Dark Chocolate 100g,STORE_B,50,80,130,200,4,Ambient,false,
+CHOC-001,Dark Chocolate 100g,STORE_A,10,80,130,200,6,Ambient,false,
+BTR-001,Salted Butter 250g,STORE_C,40,110,170,30,5,2-8 C,false,
+BTR-001,Salted Butter 250g,STORE_D,8,110,170,30,4,2-8 C,false,
