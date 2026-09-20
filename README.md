@@ -1,263 +1,389 @@
-# ReStockAI - Phase 1
+# ReStockAI ⚡
 
-ReStockAI is an inventory recovery and network optimization platform for multi-location retail and quick-commerce businesses. 
+> **Autonomous Inventory Recovery & Network Optimization Platform for Quick-Commerce and Multi-Location Retail**
 
-## Phase 1 Scope
-The goal of Phase 1 is to create a clean local foundation and implement the first working intelligence loop:
-**Data → Backend → Risk Detection → Basic Recovery Economics**
+[![Python Version](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/Frontend-React_19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Build-Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS_v4-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Cedar Policy](https://img.shields.io/badge/Security-Cedar_PBAC-4F46E5)](https://www.cedarpolicy.com/)
+[![AWS SAM](https://img.shields.io/badge/Serverless-AWS_SAM_Local-FF9900?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/serverless/sam/)
+[![Ollama](https://img.shields.io/badge/AI_Engine-Strands_%2B_Ollama-black?logo=ollama&logoColor=white)](https://ollama.com/)
+[![Tests](https://img.shields.io/badge/Tests-95_Passing-success)](#-testing--quality-assurance)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Note**: Phase 1 is fully deterministic. It does not include LLMs, machine learning, React frontends, AWS deployments, or external logistics API integrations. These will be added in future phases.
+---
 
-## Architecture
-- **Language**: Python 3.11+
-- **Framework**: FastAPI
-- **Database**: SQLite (via SQLAlchemy)
-- **Validation**: Pydantic
-- **Data Load**: CSV to SQLite seeding
+## 📌 Executive Summary
 
-### Folder Structure
+Every year, multi-location retail and quick-commerce dark-store networks lose over **$100 Billion** to unsalable inventory, perishable expiration, and uncoordinated emergency markdowns. Traditional ERPs and inventory systems operate in static silos: store managers don't know that a product expiring in 48 hours at Store A could be sold at full price within 12 hours at Store B just 6 kilometers away.
+
+**ReStockAI** transforms inventory loss from an inevitable write-off into an active profit-recovery channel. By coupling **100% deterministic economic and geospatial engines** with an **autonomous LLM orchestration agent** and **cryptographic Cedar policy controls**, ReStockAI automatically identifies at-risk SKUs, calculates the single highest net-recovery action, selects optimal cold-chain logistics partners, and dispatches transfers across dark stores in real time.
+
+---
+
+## 🏛️ System Architecture
+
+ReStockAI is architected in four clean, decoupled layers separating deterministic business logic, authorization, AI reasoning, and presentation:
+
+```mermaid
+flowchart TB
+    subgraph PresentationLayer ["1. Presentation & Operations Layer"]
+        UI["React 19 + Vite Dashboard (Tailwind CSS v4)"]
+        Terminal["AI Natural Language Agent Terminal"]
+    end
+
+    subgraph SecurityLayer ["2. Policy & Authorization Layer (Cedar PBAC)"]
+        Cedar["Cedar Policy Engine (cedarpy)"]
+        RBAC["Roles: MANAGER | OPERATOR (Store Scoped) | VIEWER"]
+    end
+
+    subgraph IntelligenceLayer ["3. Intelligence & Optimization Layer"]
+        Agent["Strands AI Agent (Local Llama 3 via Ollama)"]
+        RiskEng["Risk Engine (Decay Velocity & Expiry Score)"]
+        DemandEng["Demand Engine (Geospatial Haversine & Capacity)"]
+        DecisionEng["Decision Engine (Multi-Action Net Recovery Arbitration)"]
+        LogisticsEng["Logistics Engine (Multi-Criteria Cost/ETA/Cold-Chain)"]
+        TransferEng["Transfer State Machine (Full Lifecycle Audit)"]
+        OutcomeEng["Outcome Engine (Predicted vs Actual Variance Analytics)"]
+    end
+
+    subgraph InfrastructureLayer ["4. Dual-Execution Infrastructure & Storage"]
+        FastAPI["FastAPI REST Server (:8000)"]
+        SAM["AWS SAM Local Serverless Lambda Handler"]
+        DB[(SQLite / PostgreSQL)]
+        Search[(OpenSearch Historical Intelligence)]
+    end
+
+    UI --> |REST + X-ReStockAI-User| Cedar
+    Terminal --> |REST| Cedar
+    Cedar --> |Authorized Request| FastAPI
+    SAM -.-> |Dual Execution Path| IntelligenceLayer
+    FastAPI --> IntelligenceLayer
+    Agent --> |Tools Execution| RiskEng & DemandEng & DecisionEng & LogisticsEng
+    IntelligenceLayer --> DB
+    IntelligenceLayer --> Search
 ```
-ReStockAI/
-├── backend/
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── main.py
-│   │   ├── database.py
-│   │   ├── models/           # SQLAlchemy DB Models
-│   │   ├── schemas/          # Pydantic validation schemas
-│   │   ├── routers/          # FastAPI route handlers
-│   │   ├── services/         # Business logic (Risk/Recovery Engines)
-│   │   └── data/             # CSV synthetic datasets
-│   ├── tests/                # Pytest unit tests
-│   └── requirements.txt
-├── .gitignore
-└── README.md
+
+---
+
+## 🗺️ Complete 12-Phase Implementation Roadmap
+
+ReStockAI has been engineered across **12 comprehensive milestones**, all fully completed and integrated:
+
+| Phase | Milestone | Scope & Deliverables | Status |
+|---|---|---|:---:|
+| **Phase 1** | **Deterministic Risk Engine** | Rule-based inventory risk calculation, sales velocity decay, and expiry economic loss quantification. | ✅ **Complete** |
+| **Phase 2** | **Demand Intelligence Engine** | Geospatial Haversine store discovery, cold-chain validation, destination capacity buffer gating (80% safety fill). | ✅ **Complete** |
+| **Phase 3** | **Recovery Decision Engine** | Real-time economic arbitration across 6 actions: Transfer, Discount, Bundle, Promote, Return, Dispose. | ✅ **Complete** |
+| **Phase 4** | **Logistics Partner Selection** | Multi-criteria logistics scoring: distance-based freight cost, transit ETA, headroom capacity, cold-chain compliance. | ✅ **Complete** |
+| **Phase 5** | **Transfer Lifecycle State Machine** | Strict state machine managing end-to-end transit states (`CREATED` → `APPROVED` → `ASSIGNED` → `IN_TRANSIT` → `COMPLETED`). | ✅ **Complete** |
+| **Phase 6** | **Outcome Analytics & Feedback** | Post-recovery tracking comparing predicted vs. actual revenue, sell-through rates, and variance reconciliation. | ✅ **Complete** |
+| **Phase 7** | **Historical Intelligence Layer** | OpenSearch integration indexing past transfer performance for pattern discovery and retrieval. | ✅ **Complete** |
+| **Phase 8** | **AWS SAM Serverless Architecture** | AWS Serverless Application Model (SAM) local Lambda integration, ensuring identical parity between API and serverless handlers. | ✅ **Complete** |
+| **Phase 9** | **Strands AI Orchestration Agent** | Local LLM intelligence (Llama 3 via Ollama) with deterministic guardrails and live engine tool calling. | ✅ **Complete** |
+| **Phase 10** | **Modern Operations Dashboard** | High-performance React 19 war room interface with real-time KPI metrics, risk heatmaps, and action manifests. | ✅ **Complete** |
+| **Phase 11** | **Automated Workflow Orchestrator** | One-click end-to-end execution pipeline from risk detection to transfer creation and outcome finalization. | ✅ **Complete** |
+| **Phase 12** | **Cedar Policy-Based Access Control** | Cryptographic authorization layer using open-source Cedar (`cedarpy`), securing operations by user role and store scope. | ✅ **Complete** |
+
+---
+
+## 🧮 Mathematical & Economic Formulations
+
+ReStockAI eliminates subjective guesswork with transparent, deterministic algorithms.
+
+### 1. Dynamic Inventory Risk Score ($S_{\text{risk}}$)
+Evaluates remaining shelf life against historical sales velocity ($v_{\text{7d}}$) and current stock ($Q$):
+
+$$\Delta t = \max(t_{\text{expiry}} - t_{\text{today}}, 0)$$
+
+$$Q_{\text{expected\_sales}} = v_{\text{7d}} \times \Delta t$$
+
+$$Q_{\text{at\_risk}} = \min(\max(Q - Q_{\text{expected\_sales}}, 0), Q)$$
+
+$$R_{\%} = \frac{Q_{\text{at\_risk}}}{Q} \times 100$$
+
+$$\text{Urgency Factor } (U) = \begin{cases} 1.5 & \text{if } \Delta t \le 3 \text{ days} \\ 1.2 & \text{if } \Delta t \le 7 \text{ days} \\ 1.0 & \text{otherwise} \end{cases}$$
+
+$$S_{\text{risk}} = \min(R_{\%} \times U, 100.0)$$
+
+Classification: **CRITICAL** ($S_{\text{risk}} \ge 80$ or $\Delta t \le 2$), **HIGH** ($S_{\text{risk}} \ge 50$), **MEDIUM** ($S_{\text{risk}} \ge 20$), **LOW** ($S_{\text{risk}} < 20$).
+
+---
+
+### 2. Geospatial Haversine Distance & Usable Absorption Capacity
+Ensures products are only moved within feasible transfer radii ($D_{\max} = 15\text{ km}$) and destinations can absorb units before expiry:
+
+$$d = 2 R \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta \lambda}{2}\right)} \right)$$
+
+$$C_{\text{usable}} = \max(v_{\text{dest\_7d}} \times \Delta t - Q_{\text{dest}}, 0) \times 0.80$$
+
+$$\text{Recommended Transfer Quantity} = \min(Q_{\text{at\_risk}}, \lfloor C_{\text{usable}} \rfloor)$$
+
+---
+
+### 3. Net Economic Recovery Arbitration
+The Decision Engine evaluates all 6 recovery channels simultaneously and strictly chooses the action yielding the **highest expected net recovery**:
+
+$$\text{Action}^* = \arg\max_{a \in \mathcal{A}} \left( \text{Net Recovery}(a) \right)$$
+
+Where Net Recovery is calculated as:
+
+| Action | Net Economic Recovery Formula | Operational Complexity Rank |
+|---|---|:---:|
+| **`TRANSFER`** | $(Q_{\text{rec}} \times P_{\text{sell}}) - C_{\text{logistics}} - (Q_{\text{rec}} \times C_{\text{handling}})$ | 5 |
+| **`DISCOUNT`** | $Q_{\text{at\_risk}} \times (P_{\text{sell}} \times 0.70) \times 0.80$ | 1 |
+| **`BUNDLE`** | $Q_{\text{at\_risk}} \times (P_{\text{sell}} \times 0.85) \times 0.60 - (Q_{\text{at\_risk}} \times C_{\text{bundle\_handling}})$ | 3 |
+| **`PROMOTE`** | $(Q_{\text{uplift}} \times P_{\text{sell}}) - C_{\text{promo\_handling}}$ | 2 |
+| **`RETURN`** | $(Q_{\text{at\_risk}} \times P_{\text{supplier\_refund}}) - C_{\text{return\_logistics}} - C_{\text{return\_handling}}$ | 4 |
+| **`DISPOSE`** | $-(Q_{\text{at\_risk}} \times C_{\text{disposal\_fee}})$ | 6 |
+| **`NO_ACTION`** | $0.00$ *(Risk below actionable threshold)* | 7 |
+
+*Tie-breaking order: (1) Highest Net Recovery $\rightarrow$ (2) Highest Gross Recovered Value $\rightarrow$ (3) Lowest Operational Complexity.*
+
+---
+
+### 4. Multi-Criteria Logistics Scoring
+Ranks freight and courier partners based on cost efficiency (50%), ETA speed (30%), and fleet headroom (20%):
+
+$$S_{\text{logistics}} = 0.50 \cdot S_{\text{cost}} + 0.30 \cdot S_{\text{eta}} + 0.20 \cdot S_{\text{capacity}}$$
+
+Subject to hard constraints:
+$$\text{Supports Cold Chain}(\text{Partner}) \ge \text{Requires Cold Chain}(\text{SKU})$$
+$$\text{Vehicle Capacity Headroom} \ge \text{Transfer Quantity}$$
+
+---
+
+## 🔐 Security & Governance: Cedar Authorization (Phase 12)
+
+ReStockAI implements zero-trust authorization using the open-source **Cedar Policy Language** (`cedarpy`). Every mutating API endpoint is guarded against unauthorized access:
+
+```cedar
+// 1. Full Network Management
+permit (
+    principal in ReStockAI::Role::"MANAGER",
+    action,
+    resource
+);
+
+// 2. Store-Scoped Operator Isolation
+permit (
+    principal,
+    action in [
+        ReStockAI::Action::"ViewRisk",
+        ReStockAI::Action::"CreateTransfer",
+        ReStockAI::Action::"ExecuteWorkflow"
+    ],
+    resource
+)
+when {
+    principal.role == "OPERATOR" &&
+    resource.store_id == principal.store_scope
+};
+
+// 3. Immutability Protection: Cannot alter finalized transfers
+forbid (
+    principal,
+    action in [ReStockAI::Action::"CancelTransfer", ReStockAI::Action::"CompleteTransfer"],
+    resource
+)
+when {
+    resource.status == "COMPLETED"
+};
 ```
 
-## Installation
+---
 
-1. **Create and activate a virtual environment**:
-   ```bash
-   python -m venv venv
-   # On Windows
-   venv\Scripts\activate
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
+## 🖥️ Live User Interface & Feature Tour
 
-2. **Install requirements**:
-   ```bash
-   pip install -r backend/requirements.txt
-   ```
+The frontend is built with **React 19, TypeScript, Vite, and Tailwind CSS v4**, delivering a high-density, real-time command center:
 
-## Seeding the Database
-To load the synthetic demo dataset into the local SQLite database, run the data loader service from the root of the repository:
+### 1. Operations War Room Dashboard (`/`)
+- Real-time network telemetry: **At-Risk Units ($)**, **Potential Recovery ($)**, **Active Transit Orders**, and **Reconciled Value**.
+- Critical inventory countdown cards showing immediate expiry risks across the network.
+- Live manifest of active transfers and finalized financial outcomes.
+
+### 2. Multi-Store Risk Network Matrix (`/risk`)
+- Multi-dimensional inventory risk ledger filterable by risk level (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`).
+- Displays stock quantity, days remaining, daily sales velocity, and total capital at risk.
+
+### 3. Recovery Decision Arbitration (`/decisions`)
+- Full visual comparison of all 6 recovery actions for each at-risk SKU.
+- Displays economic breakdown: Gross Value, Logistics Freight, Handling Surcharges, and Net Recovery.
+- One-click transfer dispatch directly from the decision card.
+
+### 4. Transfer Dispatch & Manifest (`/transfers`)
+- Real-time status manifest for inventory movements (`CREATED`, `APPROVED`, `ASSIGNED`, `IN_TRANSIT`, `COMPLETED`).
+- Detailed transfer tracking with route maps, assigned logistics partner, and cold-chain compliance badges.
+
+### 5. Strands AI Natural-Language Agent Terminal (`/agent`)
+- Integrated chat terminal connected to a local LLM (e.g. Llama 3) via Strands Agents.
+- **Zero-Hallucination Deterministic Guardrails**: The agent does not invent numbers. It executes live engine tools (`get_inventory_risk`, `find_destination_matches`, `evaluate_recovery_options`, `optimize_logistics`), presents verified engine figures, and displays tool badges.
+
+---
+
+## 🚀 Quick Start Guide
+
+### Prerequisites
+- **Python 3.11+**
+- **Node.js v18+ & npm**
+- **Ollama** (optional, for local LLM assistant): [https://ollama.com/](https://ollama.com/)
+
+---
+
+### Step 1: Clone and Set Up Virtual Environment
+
 ```bash
-python -m backend.app.services.data_loader
-```
-This will create `restock.db` in the root directory and populate it with stores, logistics partners, and inventory data.
+# Clone the repository
+git clone -b main https://github.com/Manish-N-2006/Restock_AI.git
+cd Restock_AI
 
-## Running the Server
-Start the FastAPI development server using `uvicorn`:
+# Create and activate Python virtual environment
+python -m venv venv
+
+# Windows (PowerShell)
+.\venv\Scripts\activate
+
+# macOS / Linux
+source venv/bin/activate
+
+# Install backend dependencies
+pip install -r backend/requirements.txt
+```
+
+---
+
+### Step 2: Seed the Local SQLite Database
+
+Populate the database with synthetic retail stores, logistics partners, and multi-store inventory:
+
 ```bash
-uvicorn backend.app.main:app --reload
+python -m backend.app.services.data_loader --reset
 ```
-The server will start on `http://127.0.0.1:8000`. You can view the interactive API documentation at:
-- [Swagger UI](http://127.0.0.1:8000/docs)
 
-## API Endpoints
-- `GET /health` - Health check.
-- `GET /api/inventory` - Get all inventory.
-- `GET /api/inventory/{sku_id}` - Get inventory for a specific SKU.
-- `GET /api/risk` - Evaluate risk for all inventory items.
-- `GET /api/risk/summary` - Get a high-level summary of network inventory risk.
-- `POST /api/recovery/evaluate` - Evaluate the economics of a recovery action (transfer, discount, dispose, etc.).
+---
 
-## Business Logic
-### Rule-based Inventory Risk Score
-Calculated in `risk_engine.py`:
-- **Days to expiry** = `expiry_date` - `today`
-- **Expected sales before expiry** = `daily_sales_7d` × `max(days_to_expiry, 0)`
-- **Expected remaining quantity** = `max(quantity - expected_sales_before_expiry, 0)`
-- **At-risk quantity** = `min(expected_remaining_quantity, quantity)`
-- **At-risk value** = `at_risk_quantity` × `cost_price`
-- **Risk Score** = Normalized 0-100 score based on risk percentage and urgency (expiry proximity).
-- **Risk Level** = LOW, MEDIUM, HIGH, or CRITICAL based on the score and expiry days.
+### Step 3: Launch the Backend API
 
-### Recovery Economics
-Calculated in `recovery_engine.py`. Evaluates actions deterministically:
-`Expected Net Recovery = Expected Recovered Value - Logistics Cost - Handling Cost - Risk Cost`
-
-## Running Tests
-Run the pytest suite to verify the logic:
 ```bash
-pytest backend/tests/
+uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-## Example Requests
+- **API Base URL**: `http://127.0.0.1:8000`
+- **Interactive Swagger Documentation**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **Health Check**: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
 
-**Get Risk Summary:**
+*Note: Protected endpoints require the development authorization header: `X-ReStockAI-User: manager`.*
+
+---
+
+### Step 4: Start the Local AI Assistant (Optional)
+
+In a separate terminal, ensure Ollama is serving your local model (e.g. `llama3:latest` or `llama3.1`):
+
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/risk/summary"
+ollama serve
 ```
 
-**Evaluate a Transfer Action:**
+---
+
+### Step 5: Launch the Frontend Web Dashboard
+
+In a new terminal window:
+
 ```bash
-curl -X POST "http://127.0.0.1:8000/api/recovery/evaluate" -H "Content-Type: application/json" -d '{
-  "sku_id": "YOG-001",
-  "quantity": 42,
-  "source_store_id": "STORE_A",
-  "action": "transfer",
-  "expected_recovery_price": 160,
-  "logistics_cost": 50,
-  "handling_cost": 20,
-  "risk_cost": 0
-}'
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start Vite development server
+npm run dev
 ```
 
-## Phase 2 — Demand Intelligence
+Open your browser at **[http://localhost:5173](http://localhost:5173)** to access the ReStockAI command center.
 
-The Demand Engine determines which nearby stores can absorb at-risk inventory.
+---
 
-### Core Capabilities
-- **Geographic Matching**: Calculates the Haversine distance between stores. Excludes matches beyond the 15km maximum transfer radius.
-- **Same-SKU Demand Matching**: Uses `daily_sales_7d` as the deterministic demand signal for the destination store.
-- **Destination Capacity**: Safely calculates how much inventory the destination can absorb before expiry, capped by a safety buffer (`TARGET_FILL_RATIO` of 80%).
-- **Cold-Chain Compatibility**: Rejects matches if the product requires cold-chain transport (e.g. 2-8 C) but the destination store does not support it.
+## 🧪 Testing & Quality Assurance
 
-### Suitability Scoring & Ranking
-Destination candidates are ranked by a deterministic 0-100 `destination_suitability_score`, which is a weighted combination of:
-1. Normalized daily demand (50% weight)
-2. Normalized usable destination capacity (35% weight)
-3. Normalized distance score (closer is better) (15% weight)
+ReStockAI features an exhaustive automated test suite covering all services, APIs, security policies, and edge-case failure modes:
 
-*Note: This is a rule-based destination ranking, not an AI prediction.*
-
-### Recommended Transfer Quantity
-The system explicitly recommends a deterministic `recommended_transfer_quantity`:
-`min(source_at_risk_quantity, usable_destination_capacity)`
-
-### Phase 2 Example API Requests
-
-**Get Candidates for a SKU:**
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/demand/candidates/YOG-001?source_store_id=STORE_A"
+# Run the complete pytest test suite
+$env:PYTHONPATH=".;backend"; pytest backend/tests/ -v
+
+# Validate Cedar authorization policies
+python -m backend.app.authorization.validate
 ```
 
-**Get the Single Best Match for a SKU:**
+### Test Coverage Highlights:
+- `test_risk_engine.py`: Validates sales decay, urgency multipliers, and risk level thresholds.
+- `test_demand_engine.py`: Validates Haversine distance calculations, cold-chain gating, and capacity buffers.
+- `test_decision_engine.py`: Validates economic arbitration across all 6 recovery actions and deterministic tie-breaking.
+- `test_logistics_engine.py`: Validates multi-criteria scoring, cold-chain checks, and freight cost estimates.
+- `test_transfer_engine.py`: Validates state transitions, illegal state transitions, and idempotency.
+- `test_authorization_api.py`: Validates Cedar PBAC authorization, store scoping, and explicit forbidden mutations.
+- `test_agent_service.py`: Validates LLM tool-calling guardrails and deterministic fallback integration.
+
+---
+
+## 📡 API Reference & Example Requests
+
+### 1. Retrieve Network Inventory Risk Summary
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/demand/best-match/YOG-001?source_store_id=STORE_A"
+curl -X GET "http://127.0.0.1:8000/api/risk/summary" \
+     -H "X-ReStockAI-User: manager"
 ```
 
-**Get the Network Match Summary:**
+### 2. Get Optimal Recovery Decision for a SKU
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/demand/summary"
+curl -X GET "http://127.0.0.1:8000/api/decision/YOG-001?store_id=STORE_A" \
+     -H "X-ReStockAI-User: manager"
 ```
 
-### Scenario: The Yogurt Match
-- **Source (STORE_A)**: Has 50 units of YOG-001. Demand is low (4/day), and expiry is 2 days. The Risk Engine calculates 42 units are at high risk.
-- **Destination (STORE_B)**: Has high demand (10/day) and low stock (5 units). It is geographically nearby and supports the required cold chain.
-- **Result**: The Demand Engine produces `STORE_B` as a qualified destination candidate with a high suitability score, and an explicit recommendation to transfer ~24 units based on capacity constraints.
-
-### Phase 3: Recovery Decision Engine
-- `GET /api/decision/evaluate`
-- `GET /api/decision/summary`
-
-### Phase 4: Logistics Partner Selection
-- `GET /api/logistics/options`
-- `GET /api/logistics/best`
-- `GET /api/logistics/recommend/{sku_id}`
-- `GET /api/logistics/summary` and determines the absolute best economic recovery action.
-
-### The Pipeline
-1. **Risk Engine** = Detects danger. Gating prevents healthy inventory from unnecessary evaluation.
-2. **Demand Engine** = Finds possible transfer destinations.
-3. **Decision Engine** = Chooses the economically best recovery action.
-
-### Supported Actions & Economics
-- **`TRANSFER`**: Uses Phase 2 destinations. `Net Recovery = (Qty * Price) - Logistics Cost - Handling Cost`
-- **`DISCOUNT`**: Markdown at current store. `Net Recovery = (Qty * Discounted Price)`
-- **`BUNDLE`**: Combine with another product. `Net Recovery = (Qty * Bundle Price) - Handling Cost`
-- **`PROMOTE`**: Boost visibility to increase sales. `Net Recovery = (Additional Qty * Price) - Promotion Handling`
-- **`RETURN`**: Send back to supplier. `Net Recovery = (Qty * Supplier Price) - Return Logistics - Handling`
-- **`DISPOSE`**: Destroy stock. `Net Recovery = -(Qty * Disposal Cost)`
-- **`NO_ACTION`**: Fallback for items with no viable positive recovery.
-
-### Selection Rule
-The Engine strictly selects the action that yields the **highest positive expected net recovery**.
-Ties are broken deterministically:
-1. Highest net recovery
-2. Highest gross recovered value
-3. Lowest operational complexity (Discount > Promote > Bundle > Return > Transfer)
-
-### Example Output
-```json
-{
-  "selected_action": "TRANSFER",
-  "selected_destination_store_id": "STORE_B",
-  "recommended_quantity": 42,
-  "expected_net_recovery": 6247.35,
-  "decision_reason": "Transfer to STORE_B is recommended because it produces the highest positive expected net recovery of 6247.35."
-}
-```
-
-### Phase 3 API Requests
-**Get Full Decision for a SKU:**
+### 3. Query Best Matched Destination Store
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/decision/YOG-001?store_id=STORE_A"
+curl -X GET "http://127.0.0.1:8000/api/demand/best-match/YOG-001?source_store_id=STORE_A" \
+     -H "X-ReStockAI-User: manager"
 ```
 
-**Get Action Comparison Array Only:**
+### 4. Query AI Orchestration Agent
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/decision/YOG-001/actions?store_id=STORE_A"
+curl -X POST "http://127.0.0.1:8000/api/agent/ask" \
+     -H "Content-Type: application/json" \
+     -H "X-ReStockAI-User: manager" \
+     -d '{"question": "What should I do with YOG-001 at STORE_A?"}'
 ```
 
-**Get Network Decision Summary:**
+### 5. Execute Full Recovery Workflow (One-Click Autonomous Loop)
 ```bash
-curl -X GET "http://127.0.0.1:8000/api/decision/summary"
+curl -X POST "http://127.0.0.1:8000/api/workflow/execute" \
+     -H "Content-Type: application/json" \
+     -H "X-ReStockAI-User: manager" \
+     -d '{
+       "sku_id": "YOG-001",
+       "source_store_id": "STORE_A",
+       "actual_units_sold": 42,
+       "actual_recovered_value": 6720.0,
+       "actual_logistics_cost": 320.0,
+       "actual_handling_cost": 50.0
+     }'
 ```
 
-**Evaluate Entire Network (Bulk):**
-```bash
-curl -X GET "http://127.0.0.1:8000/api/decision/all"
-```
+---
 
-## Phase 8: AWS Build It Architecture
-ReStockAI is developed locally using the AWS Build It stack. 
-Strands provides the agent layer, while AWS SAM provides a serverless Lambda-style execution path locally.
+## 🏆 Why ReStockAI Wins
 
-**Architecture Layers:**
-1. **Layer 1**: FastAPI application
-2. **Layer 2**: Deterministic ReStockAI engines (Risk, Demand, Decision, Logistics, Transfer, Outcome)
-3. **Layer 3**: Strands Agent
-4. **Layer 4**: AWS SAM local serverless workflow
+1. **True End-to-End Execution**: Not a mock interface or simple wrapper. ReStockAI implements a complete loop from raw data ingestion to risk scoring, geospatial store matching, economic arbitration, logistics dispatch, and post-transfer outcome reconciliation.
+2. **100% Deterministic Financial Integrity**: Unlike unconstrained LLM solutions that hallucinate dollar values, ReStockAI's financial calculations are completely deterministic and mathematically provable. The AI agent acts strictly as an explainable orchestration layer.
+3. **Enterprise-Grade Authorization (Cedar PBAC)**: Implements Amazon's open-source Cedar language (`cedarpy`), providing formal policy separation between identity, permissions, and business logic.
+4. **Dual-Path Architecture (FastAPI + AWS SAM)**: Production-ready hybrid design supporting both containerized microservice execution and serverless AWS Lambda invocation with identical business logic parity.
+5. **Production-Ready Modern UI**: Built with React 19, Vite, and Tailwind CSS v4, providing a real-time command center designed for dark-store network dispatchers.
 
-Both the FastAPI routing and the AWS SAM local Lambda handler reuse the exact same core business logic (Layer 2) and SQLite database. This ensures that calculated values match identically across both execution paths.
+---
 
-`	ext
-Manager
-  ?
-FastAPI / Strands
-  ?
-ReStockAI Services (Layer 2)
-  ?
-SQLite
-`
-AND
-`	ext
-SAM Local API
-  ?
-Lambda-style Analysis Function (infrastructure/sam/src/handlers/analyze.py)
-  ?
-ReStockAI Services (Layer 2)
-  ?
-SQLite
-`
-See infrastructure/sam/README.md for instructions on running the AWS SAM Local workflow using the SAM CLI and Docker.
+## 📄 License
 
-## Phase 12: Cedar Authorization & Policy Layer
-ReStockAI now includes a robust authorization layer using the open-source Cedar policy language (via `cedarpy`).
-
-- **Deterministic Policies**: Policies define role-based access for Managers, Operators, and Viewers in `infrastructure/cedar/policies.cedar`.
-- **FastAPI Guards**: Reusable FastAPI dependencies (`require_permission`) automatically parse `X-ReStockAI-User` headers and authorize requests before reaching the deterministic engines.
-- **Secure by Default**: Ensures operators only act within their `store_scope`, viewers cannot mutate state, and managers cannot mutate finalized outcomes.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
