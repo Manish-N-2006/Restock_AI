@@ -259,6 +259,15 @@ def complete_transfer(db: Session, transfer_id: str) -> TransferOrder:
         
         db.commit()
         db.refresh(order)
+        
+        # Phase 9: Index the completed transfer into OpenSearch.
+        # This is wrapped gracefully in the repository, so it won't crash or rollback the transaction if OpenSearch is down.
+        try:
+            from ..opensearch.repository import index_transfer_history
+            index_transfer_history(order)
+        except Exception:
+            pass # Failsafe against absolute catastrophic import/invocation failure
+            
         return order
     except SQLAlchemyError:
         db.rollback()

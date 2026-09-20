@@ -4,6 +4,14 @@ from app.schemas.decision import RecoveryActionType
 
 client = TestClient(app)
 
+from app.authorization.principal import get_current_principal
+app.dependency_overrides[get_current_principal] = lambda: {
+    "uid": {"type": "ReStockAI::User", "id": "manager-test"},
+    "attrs": {"role": "MANAGER", "store_scope": "*"},
+    "parents": []
+}
+
+
 def test_get_decision_success():
     response = client.get("/api/decision/YOG-001?store_id=STORE_A")
     assert response.status_code == 200

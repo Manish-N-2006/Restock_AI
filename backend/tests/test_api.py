@@ -3,6 +3,14 @@ from app.main import app
 
 client = TestClient(app)
 
+from app.authorization.principal import get_current_principal
+app.dependency_overrides[get_current_principal] = lambda: {
+    "uid": {"type": "ReStockAI::User", "id": "manager-test"},
+    "attrs": {"role": "MANAGER", "store_scope": "*"},
+    "parents": []
+}
+
+
 def test_health():
     response = client.get("/health")
     assert response.status_code == 200

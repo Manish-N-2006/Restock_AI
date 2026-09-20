@@ -90,5 +90,14 @@ def seed_data():
     print("Database seeding completed.")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Load data into SQLite")
+    parser.add_argument("--reset", action="store_true", help="Reset database before loading")
+    args = parser.parse_args()
+
+    if args.reset:
+        Base.metadata.drop_all(bind=engine)
+        print("Database schemas dropped.")
+
     init_db()
     seed_data()

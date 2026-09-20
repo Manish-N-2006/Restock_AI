@@ -5,6 +5,14 @@ from app.database import SessionLocal
 
 client = TestClient(app)
 
+from app.authorization.principal import get_current_principal
+app.dependency_overrides[get_current_principal] = lambda: {
+    "uid": {"type": "ReStockAI::User", "id": "manager-test"},
+    "attrs": {"role": "MANAGER", "store_scope": "*"},
+    "parents": []
+}
+
+
 def _get_completed_transfer():
     # 1. Create
     res = client.post("/api/transfers/from-recommendation", json={"sku_id": "YOG-001", "source_store_id": "STORE_A"})

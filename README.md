@@ -221,3 +221,43 @@ curl -X GET "http://127.0.0.1:8000/api/decision/summary"
 ```bash
 curl -X GET "http://127.0.0.1:8000/api/decision/all"
 ```
+
+## Phase 8: AWS Build It Architecture
+ReStockAI is developed locally using the AWS Build It stack. 
+Strands provides the agent layer, while AWS SAM provides a serverless Lambda-style execution path locally.
+
+**Architecture Layers:**
+1. **Layer 1**: FastAPI application
+2. **Layer 2**: Deterministic ReStockAI engines (Risk, Demand, Decision, Logistics, Transfer, Outcome)
+3. **Layer 3**: Strands Agent
+4. **Layer 4**: AWS SAM local serverless workflow
+
+Both the FastAPI routing and the AWS SAM local Lambda handler reuse the exact same core business logic (Layer 2) and SQLite database. This ensures that calculated values match identically across both execution paths.
+
+`	ext
+Manager
+  ?
+FastAPI / Strands
+  ?
+ReStockAI Services (Layer 2)
+  ?
+SQLite
+`
+AND
+`	ext
+SAM Local API
+  ?
+Lambda-style Analysis Function (infrastructure/sam/src/handlers/analyze.py)
+  ?
+ReStockAI Services (Layer 2)
+  ?
+SQLite
+`
+See infrastructure/sam/README.md for instructions on running the AWS SAM Local workflow using the SAM CLI and Docker.
+
+## Phase 12: Cedar Authorization & Policy Layer
+ReStockAI now includes a robust authorization layer using the open-source Cedar policy language (via `cedarpy`).
+
+- **Deterministic Policies**: Policies define role-based access for Managers, Operators, and Viewers in `infrastructure/cedar/policies.cedar`.
+- **FastAPI Guards**: Reusable FastAPI dependencies (`require_permission`) automatically parse `X-ReStockAI-User` headers and authorize requests before reaching the deterministic engines.
+- **Secure by Default**: Ensures operators only act within their `store_scope`, viewers cannot mutate state, and managers cannot mutate finalized outcomes.

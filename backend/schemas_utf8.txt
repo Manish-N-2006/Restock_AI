@@ -1,0 +1,1836 @@
+# ActionComparisonResponse
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "store_id": {
+    "type": "string",
+    "title": "Store Id"
+  },
+  "actions": {
+    "items": {
+      "$ref": "#/components/schemas/EvaluatedAction"
+    },
+    "type": "array",
+    "title": "Actions"
+  }
+}
+# AskRequest
+{
+  "question": {
+    "type": "string",
+    "title": "Question"
+  }
+}
+# AskResponse
+{
+  "question": {
+    "type": "string",
+    "title": "Question"
+  },
+  "answer": {
+    "type": "string",
+    "title": "Answer"
+  },
+  "tools_used": {
+    "items": {
+      "type": "string"
+    },
+    "type": "array",
+    "title": "Tools Used",
+    "default": []
+  }
+}
+# AuthorizationCheckRequest
+{
+  "action": {
+    "type": "string",
+    "title": "Action"
+  },
+  "resource_type": {
+    "type": "string",
+    "title": "Resource Type"
+  },
+  "resource_id": {
+    "type": "string",
+    "title": "Resource Id"
+  }
+}
+# AuthorizationResult
+{
+  "allowed": {
+    "type": "boolean",
+    "title": "Allowed"
+  },
+  "principal_id": {
+    "type": "string",
+    "title": "Principal Id"
+  },
+  "principal_role": {
+    "type": "string",
+    "title": "Principal Role"
+  },
+  "action": {
+    "type": "string",
+    "title": "Action"
+  },
+  "resource_type": {
+    "type": "string",
+    "title": "Resource Type"
+  },
+  "resource_id": {
+    "type": "string",
+    "title": "Resource Id"
+  },
+  "reason": {
+    "type": "string",
+    "title": "Reason"
+  }
+}
+# BestLogisticsResponse
+{
+  "matched": {
+    "type": "boolean",
+    "title": "Matched"
+  },
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "destination_store_id": {
+    "type": "string",
+    "title": "Destination Store Id"
+  },
+  "transfer_quantity": {
+    "type": "integer",
+    "title": "Transfer Quantity"
+  },
+  "distance_km": {
+    "type": "number",
+    "title": "Distance Km"
+  },
+  "selected_partner": {
+    "anyOf": [
+      {
+        "$ref": "#/components/schemas/LogisticsPartnerEvaluation"
+      },
+      {
+        "type": "null"
+      }
+    ]
+  },
+  "reason": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Reason"
+  }
+}
+# BestMatchResponse
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "matched": {
+    "type": "boolean",
+    "title": "Matched"
+  },
+  "destination": {
+    "anyOf": [
+      {
+        "$ref": "#/components/schemas/DemandCandidate"
+      },
+      {
+        "type": "null"
+      }
+    ]
+  },
+  "reason": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Reason"
+  }
+}
+# DecisionResponse
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "store_id": {
+    "type": "string",
+    "title": "Store Id"
+  },
+  "risk": {
+    "anyOf": [
+      {
+        "$ref": "#/components/schemas/RiskItem"
+      },
+      {
+        "type": "null"
+      }
+    ]
+  },
+  "actions": {
+    "items": {
+      "$ref": "#/components/schemas/EvaluatedAction"
+    },
+    "type": "array",
+    "title": "Actions"
+  },
+  "selected_action": {
+    "$ref": "#/components/schemas/RecoveryActionType"
+  },
+  "selected_destination_store_id": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Selected Destination Store Id"
+  },
+  "recommended_quantity": {
+    "type": "integer",
+    "title": "Recommended Quantity"
+  },
+  "expected_net_recovery": {
+    "type": "number",
+    "title": "Expected Net Recovery"
+  },
+  "decision_reason": {
+    "type": "string",
+    "title": "Decision Reason"
+  }
+}
+# DecisionSummaryResponse
+{
+  "total_at_risk_items": {
+    "type": "integer",
+    "title": "Total At Risk Items"
+  },
+  "items_with_viable_recovery": {
+    "type": "integer",
+    "title": "Items With Viable Recovery"
+  },
+  "recommended_transfers": {
+    "type": "integer",
+    "title": "Recommended Transfers"
+  },
+  "recommended_discounts": {
+    "type": "integer",
+    "title": "Recommended Discounts"
+  },
+  "recommended_bundles": {
+    "type": "integer",
+    "title": "Recommended Bundles"
+  },
+  "recommended_promotions": {
+    "type": "integer",
+    "title": "Recommended Promotions"
+  },
+  "recommended_returns": {
+    "type": "integer",
+    "title": "Recommended Returns"
+  },
+  "recommended_disposals": {
+    "type": "integer",
+    "title": "Recommended Disposals"
+  },
+  "no_action_items": {
+    "type": "integer",
+    "title": "No Action Items"
+  },
+  "total_expected_net_recovery": {
+    "type": "number",
+    "title": "Total Expected Net Recovery"
+  }
+}
+# DemandCandidate
+{
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "destination_store_id": {
+    "type": "string",
+    "title": "Destination Store Id"
+  },
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "product_name": {
+    "type": "string",
+    "title": "Product Name"
+  },
+  "distance_km": {
+    "type": "number",
+    "title": "Distance Km"
+  },
+  "source_at_risk_quantity": {
+    "type": "integer",
+    "title": "Source At Risk Quantity"
+  },
+  "destination_current_stock": {
+    "type": "integer",
+    "title": "Destination Current Stock"
+  },
+  "destination_daily_demand": {
+    "type": "number",
+    "title": "Destination Daily Demand"
+  },
+  "days_remaining": {
+    "type": "integer",
+    "title": "Days Remaining"
+  },
+  "expected_future_demand": {
+    "type": "number",
+    "title": "Expected Future Demand"
+  },
+  "usable_destination_capacity": {
+    "type": "number",
+    "title": "Usable Destination Capacity"
+  },
+  "recommended_transfer_quantity": {
+    "type": "integer",
+    "title": "Recommended Transfer Quantity"
+  },
+  "demand_score": {
+    "type": "number",
+    "title": "Demand Score"
+  },
+  "capacity_score": {
+    "type": "number",
+    "title": "Capacity Score"
+  },
+  "distance_score": {
+    "type": "number",
+    "title": "Distance Score"
+  },
+  "destination_suitability_score": {
+    "type": "number",
+    "title": "Destination Suitability Score"
+  },
+  "cold_chain_compatible": {
+    "type": "boolean",
+    "title": "Cold Chain Compatible"
+  },
+  "eligible": {
+    "type": "boolean",
+    "title": "Eligible"
+  },
+  "explanation": {
+    "type": "string",
+    "title": "Explanation"
+  }
+}
+# DemandMatchResponse
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "source_risk": {
+    "anyOf": [
+      {
+        "$ref": "#/components/schemas/RiskItem"
+      },
+      {
+        "type": "null"
+      }
+    ]
+  },
+  "candidates": {
+    "items": {
+      "$ref": "#/components/schemas/DemandCandidate"
+    },
+    "type": "array",
+    "title": "Candidates"
+  }
+}
+# DemandSummaryResponse
+{
+  "at_risk_skus": {
+    "type": "integer",
+    "title": "At Risk Skus"
+  },
+  "source_stores_with_risk": {
+    "type": "integer",
+    "title": "Source Stores With Risk"
+  },
+  "eligible_destination_stores": {
+    "type": "integer",
+    "title": "Eligible Destination Stores"
+  },
+  "total_candidate_matches": {
+    "type": "integer",
+    "title": "Total Candidate Matches"
+  },
+  "total_transferable_units": {
+    "type": "integer",
+    "title": "Total Transferable Units"
+  },
+  "unmatched_at_risk_units": {
+    "type": "integer",
+    "title": "Unmatched At Risk Units"
+  }
+}
+# EvaluatedAction
+{
+  "action": {
+    "$ref": "#/components/schemas/RecoveryActionType"
+  },
+  "available": {
+    "type": "boolean",
+    "title": "Available"
+  },
+  "quantity": {
+    "type": "integer",
+    "title": "Quantity"
+  },
+  "expected_recovered_value": {
+    "type": "number",
+    "title": "Expected Recovered Value"
+  },
+  "logistics_cost": {
+    "type": "number",
+    "title": "Logistics Cost"
+  },
+  "handling_cost": {
+    "type": "number",
+    "title": "Handling Cost"
+  },
+  "risk_cost": {
+    "type": "number",
+    "title": "Risk Cost"
+  },
+  "expected_net_recovery": {
+    "type": "number",
+    "title": "Expected Net Recovery"
+  },
+  "economically_viable": {
+    "type": "boolean",
+    "title": "Economically Viable"
+  },
+  "assumptions": {
+    "items": {
+      "type": "string"
+    },
+    "type": "array",
+    "title": "Assumptions"
+  },
+  "reason": {
+    "type": "string",
+    "title": "Reason"
+  }
+}
+# HTTPValidationError
+{
+  "detail": {
+    "items": {
+      "$ref": "#/components/schemas/ValidationError"
+    },
+    "type": "array",
+    "title": "Detail"
+  }
+}
+# HealthResponse
+{
+  "configured": {
+    "type": "boolean",
+    "title": "Configured"
+  },
+  "available": {
+    "type": "boolean",
+    "title": "Available"
+  },
+  "model_provider": {
+    "type": "string",
+    "title": "Model Provider"
+  },
+  "ollama_host": {
+    "type": "string",
+    "title": "Ollama Host"
+  },
+  "model_name": {
+    "type": "string",
+    "title": "Model Name"
+  }
+}
+# HistorySearchResponse
+{
+  "total": {
+    "type": "integer",
+    "title": "Total"
+  },
+  "results": {
+    "items": {
+      "$ref": "#/components/schemas/HistorySearchResult"
+    },
+    "type": "array",
+    "title": "Results"
+  }
+}
+# HistorySearchResult
+{
+  "transfer_id": {
+    "type": "string",
+    "title": "Transfer Id"
+  },
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "destination_store_id": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Destination Store Id"
+  },
+  "action": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Action"
+  },
+  "actual_net_recovery": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Actual Net Recovery"
+  },
+  "recovery_accuracy_percentage": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Recovery Accuracy Percentage"
+  },
+  "actual_units_sold": {
+    "anyOf": [
+      {
+        "type": "integer"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Actual Units Sold"
+  }
+}
+# HistorySummaryResponse
+{
+  "total_indexed_transfers": {
+    "type": "integer",
+    "title": "Total Indexed Transfers"
+  },
+  "total_finalized_outcomes": {
+    "type": "integer",
+    "title": "Total Finalized Outcomes"
+  },
+  "total_units_moved": {
+    "type": "integer",
+    "title": "Total Units Moved"
+  },
+  "total_actual_net_recovery": {
+    "type": "number",
+    "title": "Total Actual Net Recovery"
+  },
+  "average_recovery_accuracy": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Average Recovery Accuracy"
+  },
+  "average_sell_through_rate": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Average Sell Through Rate"
+  },
+  "transfer_count_by_action": {
+    "additionalProperties": {
+      "type": "integer"
+    },
+    "type": "object",
+    "title": "Transfer Count By Action"
+  },
+  "transfer_count_by_partner": {
+    "additionalProperties": {
+      "type": "integer"
+    },
+    "type": "object",
+    "title": "Transfer Count By Partner"
+  }
+}
+# IntegratedRecommendationResponse
+{
+  "decision": {
+    "$ref": "#/components/schemas/DecisionResponse"
+  },
+  "logistics": {
+    "anyOf": [
+      {
+        "$ref": "#/components/schemas/LogisticsIntegrationResult"
+      },
+      {
+        "type": "null"
+      }
+    ]
+  },
+  "logistics_adjusted_net_recovery": {
+    "type": "number",
+    "title": "Logistics Adjusted Net Recovery"
+  },
+  "transfer_still_viable": {
+    "type": "boolean",
+    "title": "Transfer Still Viable"
+  },
+  "reason": {
+    "type": "string",
+    "title": "Reason"
+  }
+}
+# Inventory
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "product_name": {
+    "type": "string",
+    "title": "Product Name"
+  },
+  "store_id": {
+    "type": "string",
+    "title": "Store Id"
+  },
+  "quantity": {
+    "type": "integer",
+    "title": "Quantity"
+  },
+  "cost_price": {
+    "type": "number",
+    "title": "Cost Price"
+  },
+  "selling_price": {
+    "type": "number",
+    "title": "Selling Price"
+  },
+  "expiry_date": {
+    "type": "string",
+    "format": "date-time",
+    "title": "Expiry Date"
+  },
+  "daily_sales_7d": {
+    "type": "number",
+    "title": "Daily Sales 7D"
+  },
+  "temperature_class": {
+    "type": "string",
+    "title": "Temperature Class"
+  },
+  "return_allowed": {
+    "type": "boolean",
+    "title": "Return Allowed",
+    "default": false
+  },
+  "supplier_return_value": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Supplier Return Value"
+  },
+  "reserved_quantity": {
+    "type": "integer",
+    "title": "Reserved Quantity",
+    "default": 0
+  },
+  "id": {
+    "type": "integer",
+    "title": "Id"
+  },
+  "created_at": {
+    "type": "string",
+    "format": "date-time",
+    "title": "Created At"
+  }
+}
+# LogisticsIntegrationResult
+{
+  "selected_partner": {
+    "anyOf": [
+      {
+        "$ref": "#/components/schemas/LogisticsPartnerEvaluation"
+      },
+      {
+        "type": "null"
+      }
+    ]
+  },
+  "delivery_cost": {
+    "type": "number",
+    "title": "Delivery Cost"
+  },
+  "eta_minutes": {
+    "type": "integer",
+    "title": "Eta Minutes"
+  }
+}
+# LogisticsOptionsResponse
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "destination_store_id": {
+    "type": "string",
+    "title": "Destination Store Id"
+  },
+  "transfer_quantity": {
+    "type": "integer",
+    "title": "Transfer Quantity"
+  },
+  "matched": {
+    "type": "boolean",
+    "title": "Matched"
+  },
+  "options": {
+    "items": {
+      "$ref": "#/components/schemas/LogisticsPartnerEvaluation"
+    },
+    "type": "array",
+    "title": "Options"
+  }
+}
+# LogisticsPartnerEvaluation
+{
+  "partner_id": {
+    "type": "string",
+    "title": "Partner Id"
+  },
+  "partner_name": {
+    "type": "string",
+    "title": "Partner Name"
+  },
+  "distance_km": {
+    "type": "number",
+    "title": "Distance Km"
+  },
+  "transfer_quantity": {
+    "type": "integer",
+    "title": "Transfer Quantity"
+  },
+  "capacity_units": {
+    "type": "integer",
+    "title": "Capacity Units"
+  },
+  "capacity_headroom": {
+    "type": "integer",
+    "title": "Capacity Headroom"
+  },
+  "estimated_delivery_cost": {
+    "type": "number",
+    "title": "Estimated Delivery Cost"
+  },
+  "average_eta_minutes": {
+    "type": "integer",
+    "title": "Average Eta Minutes"
+  },
+  "cold_chain_required": {
+    "type": "boolean",
+    "title": "Cold Chain Required"
+  },
+  "supports_cold_chain": {
+    "type": "boolean",
+    "title": "Supports Cold Chain"
+  },
+  "cost_score": {
+    "type": "number",
+    "title": "Cost Score"
+  },
+  "eta_score": {
+    "type": "number",
+    "title": "Eta Score"
+  },
+  "capacity_score": {
+    "type": "number",
+    "title": "Capacity Score"
+  },
+  "logistics_suitability_score": {
+    "type": "number",
+    "title": "Logistics Suitability Score"
+  },
+  "eligible": {
+    "type": "boolean",
+    "title": "Eligible"
+  },
+  "reason": {
+    "type": "string",
+    "title": "Reason"
+  }
+}
+# LogisticsSummaryResponse
+{
+  "total_logistics_partners": {
+    "type": "integer",
+    "title": "Total Logistics Partners"
+  },
+  "eligible_partner_evaluations": {
+    "type": "integer",
+    "title": "Eligible Partner Evaluations"
+  },
+  "rejected_partner_evaluations": {
+    "type": "integer",
+    "title": "Rejected Partner Evaluations"
+  },
+  "transfers_with_viable_partner": {
+    "type": "integer",
+    "title": "Transfers With Viable Partner"
+  },
+  "transfers_with_no_viable_partner": {
+    "type": "integer",
+    "title": "Transfers With No Viable Partner"
+  },
+  "average_estimated_delivery_cost": {
+    "type": "number",
+    "title": "Average Estimated Delivery Cost"
+  },
+  "average_eta": {
+    "type": "number",
+    "title": "Average Eta"
+  },
+  "cold_chain_compatible_partners": {
+    "type": "integer",
+    "title": "Cold Chain Compatible Partners"
+  }
+}
+# OpenSearchHealthResponse
+{
+  "configured": {
+    "type": "boolean",
+    "title": "Configured"
+  },
+  "available": {
+    "type": "boolean",
+    "title": "Available"
+  },
+  "index": {
+    "type": "string",
+    "title": "Index"
+  }
+}
+# OutcomeActualsSnapshot
+{
+  "actual_units_sold": {
+    "anyOf": [
+      {
+        "type": "integer"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Actual Units Sold"
+  },
+  "actual_unsold_units": {
+    "anyOf": [
+      {
+        "type": "integer"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Actual Unsold Units"
+  },
+  "actual_recovered_value": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Actual Recovered Value"
+  },
+  "actual_logistics_cost": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Actual Logistics Cost"
+  },
+  "actual_handling_cost": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Actual Handling Cost"
+  },
+  "actual_net_recovery": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Actual Net Recovery"
+  }
+}
+# OutcomeEventResponse
+{
+  "event_type": {
+    "type": "string",
+    "title": "Event Type"
+  },
+  "message": {
+    "type": "string",
+    "title": "Message"
+  },
+  "created_at": {
+    "type": "string",
+    "format": "date-time",
+    "title": "Created At"
+  }
+}
+# OutcomeMetricsSnapshot
+{
+  "recovery_variance": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Recovery Variance"
+  },
+  "recovery_percentage": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Recovery Percentage"
+  },
+  "unit_sales_variance": {
+    "anyOf": [
+      {
+        "type": "integer"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Unit Sales Variance"
+  },
+  "logistics_cost_variance": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Logistics Cost Variance"
+  },
+  "recovery_accuracy_percentage": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Recovery Accuracy Percentage"
+  },
+  "sell_through_rate": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Sell Through Rate"
+  }
+}
+# OutcomePredictionSnapshot
+{
+  "predicted_units_sold": {
+    "anyOf": [
+      {
+        "type": "integer"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Predicted Units Sold"
+  },
+  "predicted_recovered_value": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Predicted Recovered Value"
+  },
+  "predicted_logistics_cost": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Predicted Logistics Cost"
+  },
+  "predicted_handling_cost": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Predicted Handling Cost"
+  },
+  "predicted_net_recovery": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Predicted Net Recovery"
+  }
+}
+# OutcomeResponse
+{
+  "outcome_id": {
+    "type": "string",
+    "title": "Outcome Id"
+  },
+  "transfer_id": {
+    "type": "string",
+    "title": "Transfer Id"
+  },
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "destination_store_id": {
+    "type": "string",
+    "title": "Destination Store Id"
+  },
+  "transferred_quantity": {
+    "type": "integer",
+    "title": "Transferred Quantity"
+  },
+  "prediction": {
+    "$ref": "#/components/schemas/OutcomePredictionSnapshot"
+  },
+  "actual": {
+    "$ref": "#/components/schemas/OutcomeActualsSnapshot"
+  },
+  "metrics": {
+    "$ref": "#/components/schemas/OutcomeMetricsSnapshot"
+  },
+  "outcome_status": {
+    "type": "string",
+    "title": "Outcome Status"
+  },
+  "outcome_recorded_at": {
+    "type": "string",
+    "format": "date-time",
+    "title": "Outcome Recorded At"
+  },
+  "finalized_at": {
+    "anyOf": [
+      {
+        "type": "string",
+        "format": "date-time"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Finalized At"
+  },
+  "events": {
+    "items": {
+      "$ref": "#/components/schemas/OutcomeEventResponse"
+    },
+    "type": "array",
+    "title": "Events",
+    "default": []
+  }
+}
+# OutcomeSummaryResponse
+{
+  "total_completed_transfers": {
+    "type": "integer",
+    "title": "Total Completed Transfers"
+  },
+  "total_finalized_outcomes": {
+    "type": "integer",
+    "title": "Total Finalized Outcomes"
+  },
+  "total_units_transferred": {
+    "type": "integer",
+    "title": "Total Units Transferred"
+  },
+  "total_units_sold": {
+    "type": "integer",
+    "title": "Total Units Sold"
+  },
+  "total_units_unsold": {
+    "type": "integer",
+    "title": "Total Units Unsold"
+  },
+  "total_recovered_value": {
+    "type": "number",
+    "title": "Total Recovered Value"
+  },
+  "total_actual_logistics_cost": {
+    "type": "number",
+    "title": "Total Actual Logistics Cost"
+  },
+  "total_actual_net_recovery": {
+    "type": "number",
+    "title": "Total Actual Net Recovery"
+  },
+  "total_predicted_net_recovery": {
+    "type": "number",
+    "title": "Total Predicted Net Recovery"
+  },
+  "total_recovery_variance": {
+    "type": "number",
+    "title": "Total Recovery Variance"
+  },
+  "average_recovery_accuracy": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Average Recovery Accuracy"
+  },
+  "average_sell_through_rate": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Average Sell Through Rate"
+  }
+}
+# RecordFinancialsRequest
+{
+  "actual_recovered_value": {
+    "type": "number",
+    "minimum": 0.0,
+    "title": "Actual Recovered Value"
+  },
+  "actual_logistics_cost": {
+    "type": "number",
+    "minimum": 0.0,
+    "title": "Actual Logistics Cost"
+  },
+  "actual_handling_cost": {
+    "type": "number",
+    "minimum": 0.0,
+    "title": "Actual Handling Cost"
+  }
+}
+# RecordSalesRequest
+{
+  "actual_units_sold": {
+    "type": "integer",
+    "minimum": 0.0,
+    "title": "Actual Units Sold"
+  }
+}
+# RecoveryActionType
+{}
+# RecoveryEvaluateRequest
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "quantity": {
+    "type": "integer",
+    "title": "Quantity"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "action": {
+    "type": "string",
+    "enum": [
+      "transfer",
+      "discount",
+      "dispose",
+      "bundle",
+      "promote",
+      "return"
+    ],
+    "title": "Action"
+  },
+  "expected_recovery_price": {
+    "type": "number",
+    "title": "Expected Recovery Price",
+    "default": 0.0
+  },
+  "logistics_cost": {
+    "type": "number",
+    "title": "Logistics Cost",
+    "default": 0.0
+  },
+  "handling_cost": {
+    "type": "number",
+    "title": "Handling Cost",
+    "default": 0.0
+  },
+  "risk_cost": {
+    "type": "number",
+    "title": "Risk Cost",
+    "default": 0.0
+  }
+}
+# RecoveryEvaluateResponse
+{
+  "action": {
+    "type": "string",
+    "title": "Action"
+  },
+  "quantity": {
+    "type": "integer",
+    "title": "Quantity"
+  },
+  "expected_recovered_value": {
+    "type": "number",
+    "title": "Expected Recovered Value"
+  },
+  "logistics_cost": {
+    "type": "number",
+    "title": "Logistics Cost"
+  },
+  "handling_cost": {
+    "type": "number",
+    "title": "Handling Cost"
+  },
+  "risk_cost": {
+    "type": "number",
+    "title": "Risk Cost"
+  },
+  "expected_net_recovery": {
+    "type": "number",
+    "title": "Expected Net Recovery"
+  },
+  "economically_viable": {
+    "type": "boolean",
+    "title": "Economically Viable"
+  }
+}
+# RiskItem
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "product_name": {
+    "type": "string",
+    "title": "Product Name"
+  },
+  "store_id": {
+    "type": "string",
+    "title": "Store Id"
+  },
+  "quantity": {
+    "type": "integer",
+    "title": "Quantity"
+  },
+  "days_to_expiry": {
+    "type": "integer",
+    "title": "Days To Expiry"
+  },
+  "daily_sales_7d": {
+    "type": "number",
+    "title": "Daily Sales 7D"
+  },
+  "expected_sales_before_expiry": {
+    "type": "number",
+    "title": "Expected Sales Before Expiry"
+  },
+  "expected_remaining_quantity": {
+    "type": "integer",
+    "title": "Expected Remaining Quantity"
+  },
+  "at_risk_quantity": {
+    "type": "integer",
+    "title": "At Risk Quantity"
+  },
+  "at_risk_value": {
+    "type": "number",
+    "title": "At Risk Value"
+  },
+  "risk_percentage": {
+    "type": "number",
+    "title": "Risk Percentage"
+  },
+  "risk_score": {
+    "type": "number",
+    "title": "Risk Score"
+  },
+  "risk_level": {
+    "type": "string",
+    "title": "Risk Level"
+  }
+}
+# RiskResponse
+{
+  "items": {
+    "items": {
+      "$ref": "#/components/schemas/RiskItem"
+    },
+    "type": "array",
+    "title": "Items"
+  }
+}
+# RiskSummaryResponse
+{
+  "total_inventory_units": {
+    "type": "integer",
+    "title": "Total Inventory Units"
+  },
+  "total_inventory_value": {
+    "type": "number",
+    "title": "Total Inventory Value"
+  },
+  "total_at_risk_units": {
+    "type": "integer",
+    "title": "Total At Risk Units"
+  },
+  "total_at_risk_value": {
+    "type": "number",
+    "title": "Total At Risk Value"
+  },
+  "high_critical_count": {
+    "type": "integer",
+    "title": "High Critical Count"
+  },
+  "percentage_at_risk": {
+    "type": "number",
+    "title": "Percentage At Risk"
+  }
+}
+# TransferEventResponse
+{
+  "id": {
+    "type": "integer",
+    "title": "Id"
+  },
+  "transfer_id": {
+    "type": "string",
+    "title": "Transfer Id"
+  },
+  "from_status": {
+    "anyOf": [
+      {
+        "$ref": "#/components/schemas/TransferStatus"
+      },
+      {
+        "type": "null"
+      }
+    ]
+  },
+  "to_status": {
+    "$ref": "#/components/schemas/TransferStatus"
+  },
+  "event_type": {
+    "type": "string",
+    "title": "Event Type"
+  },
+  "message": {
+    "type": "string",
+    "title": "Message"
+  },
+  "created_at": {
+    "type": "string",
+    "format": "date-time",
+    "title": "Created At"
+  }
+}
+# TransferOrderCreate
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "destination_store_id": {
+    "type": "string",
+    "title": "Destination Store Id"
+  },
+  "quantity": {
+    "type": "integer",
+    "title": "Quantity"
+  }
+}
+# TransferOrderRecommendationCreate
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  }
+}
+# TransferOrderResponse
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "destination_store_id": {
+    "type": "string",
+    "title": "Destination Store Id"
+  },
+  "quantity": {
+    "type": "integer",
+    "title": "Quantity"
+  },
+  "id": {
+    "type": "integer",
+    "title": "Id"
+  },
+  "transfer_id": {
+    "type": "string",
+    "title": "Transfer Id"
+  },
+  "product_name": {
+    "type": "string",
+    "title": "Product Name"
+  },
+  "status": {
+    "$ref": "#/components/schemas/TransferStatus"
+  },
+  "logistics_partner_id": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Logistics Partner Id"
+  },
+  "logistics_partner_name": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Logistics Partner Name"
+  },
+  "distance_km": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Distance Km"
+  },
+  "estimated_delivery_cost": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Estimated Delivery Cost"
+  },
+  "estimated_eta_minutes": {
+    "anyOf": [
+      {
+        "type": "integer"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Estimated Eta Minutes"
+  },
+  "expected_net_recovery": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Expected Net Recovery"
+  },
+  "logistics_adjusted_net_recovery": {
+    "anyOf": [
+      {
+        "type": "number"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Logistics Adjusted Net Recovery"
+  },
+  "created_at": {
+    "type": "string",
+    "format": "date-time",
+    "title": "Created At"
+  },
+  "updated_at": {
+    "type": "string",
+    "format": "date-time",
+    "title": "Updated At"
+  },
+  "approved_at": {
+    "anyOf": [
+      {
+        "type": "string",
+        "format": "date-time"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Approved At"
+  },
+  "assigned_at": {
+    "anyOf": [
+      {
+        "type": "string",
+        "format": "date-time"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Assigned At"
+  },
+  "picked_up_at": {
+    "anyOf": [
+      {
+        "type": "string",
+        "format": "date-time"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Picked Up At"
+  },
+  "in_transit_at": {
+    "anyOf": [
+      {
+        "type": "string",
+        "format": "date-time"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "In Transit At"
+  },
+  "delivered_at": {
+    "anyOf": [
+      {
+        "type": "string",
+        "format": "date-time"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Delivered At"
+  },
+  "completed_at": {
+    "anyOf": [
+      {
+        "type": "string",
+        "format": "date-time"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Completed At"
+  },
+  "cancelled_at": {
+    "anyOf": [
+      {
+        "type": "string",
+        "format": "date-time"
+      },
+      {
+        "type": "null"
+      }
+    ],
+    "title": "Cancelled At"
+  },
+  "events": {
+    "items": {
+      "$ref": "#/components/schemas/TransferEventResponse"
+    },
+    "type": "array",
+    "title": "Events",
+    "default": []
+  }
+}
+# TransferStatus
+{}
+# TransferSummaryResponse
+{
+  "total_transfers": {
+    "type": "integer",
+    "title": "Total Transfers"
+  },
+  "created": {
+    "type": "integer",
+    "title": "Created"
+  },
+  "approved": {
+    "type": "integer",
+    "title": "Approved"
+  },
+  "assigned": {
+    "type": "integer",
+    "title": "Assigned"
+  },
+  "pickup_pending": {
+    "type": "integer",
+    "title": "Pickup Pending"
+  },
+  "in_transit": {
+    "type": "integer",
+    "title": "In Transit"
+  },
+  "delivered": {
+    "type": "integer",
+    "title": "Delivered"
+  },
+  "completed": {
+    "type": "integer",
+    "title": "Completed"
+  },
+  "cancelled": {
+    "type": "integer",
+    "title": "Cancelled"
+  },
+  "failed": {
+    "type": "integer",
+    "title": "Failed"
+  },
+  "total_units_transferred": {
+    "type": "integer",
+    "title": "Total Units Transferred"
+  },
+  "total_estimated_logistics_cost": {
+    "type": "number",
+    "title": "Total Estimated Logistics Cost"
+  },
+  "total_expected_net_recovery": {
+    "type": "number",
+    "title": "Total Expected Net Recovery"
+  }
+}
+# ValidationError
+{
+  "loc": {
+    "items": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    },
+    "type": "array",
+    "title": "Location"
+  },
+  "msg": {
+    "type": "string",
+    "title": "Message"
+  },
+  "type": {
+    "type": "string",
+    "title": "Error Type"
+  }
+}
+# WorkflowAnalyzeRequest
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  }
+}
+# WorkflowExecuteRequest
+{
+  "sku_id": {
+    "type": "string",
+    "title": "Sku Id"
+  },
+  "source_store_id": {
+    "type": "string",
+    "title": "Source Store Id"
+  },
+  "actual_units_sold": {
+    "type": "integer",
+    "title": "Actual Units Sold"
+  },
+  "actual_recovered_value": {
+    "type": "number",
+    "title": "Actual Recovered Value"
+  },
+  "actual_logistics_cost": {
+    "type": "number",
+    "title": "Actual Logistics Cost"
+  },
+  "actual_handling_cost": {
+    "type": "number",
+    "title": "Actual Handling Cost"
+  }
+}

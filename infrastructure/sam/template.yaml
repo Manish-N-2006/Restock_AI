@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ReStockAI SAM Local Serverless Integration
+  
+  Demonstrates how the deterministic ReStockAI backend services can be executed 
+  within an AWS Lambda-style serverless workflow running locally.
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Environment:
+      Variables:
+        RESTOCKAI_ENV: local
+        # Since this container mounts the root directory, sqlite:///./restock.db resolves to the root DB.
+        RESTOCKAI_DB_PATH: sqlite:///./restock.db
+
+Resources:
+  ReStockAIAnalysisFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../
+      Handler: infrastructure.sam.src.handlers.analyze.lambda_handler
+      Runtime: python3.11
+      Architectures:
+        - x86_64
+      Events:
+        AnalyzeApi:
+          Type: Api
+          Properties:
+            Path: /sam/analyze
+            Method: post

@@ -1,0 +1,91 @@
+namespace ReStockAI {
+    entity User {
+        role: String,
+        store_scope: String
+    };
+
+    entity Transfer {
+        source_store_id: String,
+        status: String
+    };
+
+    entity Outcome {
+        finalized: Bool
+    };
+
+    entity Inventory {};
+    entity Risk {};
+    entity Decision {};
+    entity History {};
+    entity Workflow {};
+
+    action VIEW_INVENTORY appliesTo {
+        principal: [User],
+        resource: [Inventory]
+    };
+
+    action VIEW_RISK appliesTo {
+        principal: [User],
+        resource: [Risk]
+    };
+
+    action VIEW_DECISION appliesTo {
+        principal: [User],
+        resource: [Decision]
+    };
+
+    action VIEW_HISTORY appliesTo {
+        principal: [User],
+        resource: [History]
+    };
+
+    action VIEW_OUTCOME appliesTo {
+        principal: [User],
+        resource: [Outcome]
+    };
+
+    action ANALYZE_WORKFLOW appliesTo {
+        principal: [User],
+        resource: [Workflow]
+    };
+
+    action VIEW_TRANSFER appliesTo {
+        principal: [User],
+        resource: [Transfer]
+    };
+
+    action CREATE_TRANSFER appliesTo {
+        principal: [User],
+        resource: [Transfer]
+    };
+
+    action APPROVE_TRANSFER appliesTo {
+        principal: [User],
+        resource: [Transfer]
+    };
+
+    action ASSIGN_TRANSFER appliesTo {
+        principal: [User],
+        resource: [Transfer]
+    };
+
+    action START_TRANSFER appliesTo {
+        principal: [User],
+        resource: [Transfer]
+    };
+
+    action COMPLETE_TRANSFER appliesTo {
+        principal: [User],
+        resource: [Transfer]
+    };
+
+    action CANCEL_TRANSFER appliesTo {
+        principal: [User],
+        resource: [Transfer]
+    };
+    
+    action MODIFY_FINALIZED_OUTCOME appliesTo {
+        principal: [User],
+        resource: [Outcome]
+    };
+}

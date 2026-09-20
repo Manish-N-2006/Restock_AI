@@ -1,0 +1,9 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "restockai-sam-local"
+resolve_s3 = true
+s3_prefix = "restockai-sam-local"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"

@@ -165,6 +165,17 @@ def finalize_outcome(db: Session, outcome_id: str) -> Outcome:
     
     db.commit()
     db.refresh(outcome)
+    
+    # Phase 9: Upsert the final outcome metrics into the OpenSearch historical document.
+    try:
+        from ..opensearch.repository import upsert_outcome_history
+        from .transfer_engine import get_transfer
+        # Get transfer to enrich the outcome document
+        transfer = db.query(TransferOrder).filter(TransferOrder.transfer_id == outcome.transfer_id).first()
+        upsert_outcome_history(outcome, transfer)
+    except Exception:
+        pass
+        
     return outcome
 
 def list_outcomes(db: Session, sku_id: Optional[str] = None, transfer_id: Optional[str] = None, destination_store_id: Optional[str] = None, status: Optional[str] = None) -> List[Outcome]:

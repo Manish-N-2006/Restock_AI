@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 from datetime import datetime
 from .decision import RecoveryActionType
@@ -31,8 +31,7 @@ class OutcomeEventResponse(BaseModel):
     message: str
     created_at: datetime
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class OutcomeResponse(BaseModel):
     outcome_id: str
@@ -51,9 +50,7 @@ class OutcomeResponse(BaseModel):
     finalized_at: Optional[datetime] = None
     events: List[OutcomeEventResponse] = []
     
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 class RecordSalesRequest(BaseModel):
     actual_units_sold: int = Field(..., ge=0)

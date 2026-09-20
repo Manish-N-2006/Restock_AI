@@ -10,10 +10,12 @@ from ..schemas.transfer import (
     TransferSummaryResponse
 )
 from ..services import transfer_engine
+from ..authorization.dependencies import require_permission
+from ..authorization.actions import Action
 
 router = APIRouter()
 
-@router.post("/from-recommendation", response_model=TransferOrderResponse)
+@router.post("/from-recommendation", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.CREATE_TRANSFER, "Transfer"))])
 def create_transfer_from_recommendation(
     request: TransferOrderRecommendationCreate,
     db: Session = Depends(get_db)
@@ -22,7 +24,7 @@ def create_transfer_from_recommendation(
         db, request.sku_id, request.source_store_id
     )
 
-@router.post("", response_model=TransferOrderResponse)
+@router.post("", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.CREATE_TRANSFER, "Transfer"))])
 def create_manual_transfer(
     request: TransferOrderCreate,
     db: Session = Depends(get_db)
@@ -31,67 +33,67 @@ def create_manual_transfer(
         db, request.sku_id, request.source_store_id, request.destination_store_id, request.quantity
     )
 
-@router.post("/{transfer_id}/approve", response_model=TransferOrderResponse)
+@router.post("/{transfer_id}/approve", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.APPROVE_TRANSFER, "Transfer"))])
 def approve_transfer(
     transfer_id: str = Path(...),
     db: Session = Depends(get_db)
 ):
     return transfer_engine.approve_transfer(db, transfer_id)
 
-@router.post("/{transfer_id}/assign", response_model=TransferOrderResponse)
+@router.post("/{transfer_id}/assign", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.ASSIGN_TRANSFER, "Transfer"))])
 def assign_transfer(
     transfer_id: str = Path(...),
     db: Session = Depends(get_db)
 ):
     return transfer_engine.assign_transfer(db, transfer_id)
 
-@router.post("/{transfer_id}/pickup", response_model=TransferOrderResponse)
+@router.post("/{transfer_id}/pickup", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.START_TRANSFER, "Transfer"))])
 def pickup_transfer(
     transfer_id: str = Path(...),
     db: Session = Depends(get_db)
 ):
     return transfer_engine.mark_pickup_pending(db, transfer_id)
 
-@router.post("/{transfer_id}/start-transit", response_model=TransferOrderResponse)
+@router.post("/{transfer_id}/start-transit", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.START_TRANSFER, "Transfer"))])
 def start_transit_transfer(
     transfer_id: str = Path(...),
     db: Session = Depends(get_db)
 ):
     return transfer_engine.start_transfer(db, transfer_id)
 
-@router.post("/{transfer_id}/deliver", response_model=TransferOrderResponse)
+@router.post("/{transfer_id}/deliver", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.COMPLETE_TRANSFER, "Transfer"))])
 def deliver_transfer(
     transfer_id: str = Path(...),
     db: Session = Depends(get_db)
 ):
     return transfer_engine.mark_delivered(db, transfer_id)
 
-@router.post("/{transfer_id}/complete", response_model=TransferOrderResponse)
+@router.post("/{transfer_id}/complete", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.COMPLETE_TRANSFER, "Transfer"))])
 def complete_transfer(
     transfer_id: str = Path(...),
     db: Session = Depends(get_db)
 ):
     return transfer_engine.complete_transfer(db, transfer_id)
 
-@router.post("/{transfer_id}/cancel", response_model=TransferOrderResponse)
+@router.post("/{transfer_id}/cancel", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.CANCEL_TRANSFER, "Transfer"))])
 def cancel_transfer(
     transfer_id: str = Path(...),
     db: Session = Depends(get_db)
 ):
     return transfer_engine.cancel_transfer(db, transfer_id)
 
-@router.get("/summary", response_model=TransferSummaryResponse)
+@router.get("/summary", response_model=TransferSummaryResponse, dependencies=[Depends(require_permission(Action.VIEW_TRANSFER, "Transfer"))])
 def get_transfers_summary(db: Session = Depends(get_db)):
     return transfer_engine.get_transfer_summary(db)
 
-@router.get("/{transfer_id}", response_model=TransferOrderResponse)
+@router.get("/{transfer_id}", response_model=TransferOrderResponse, dependencies=[Depends(require_permission(Action.VIEW_TRANSFER, "Transfer"))])
 def get_transfer(
     transfer_id: str = Path(...),
     db: Session = Depends(get_db)
 ):
     return transfer_engine.get_transfer(db, transfer_id)
 
-@router.get("", response_model=List[TransferOrderResponse])
+@router.get("", response_model=List[TransferOrderResponse], dependencies=[Depends(require_permission(Action.VIEW_TRANSFER, "Transfer"))])
 def list_transfers(
     status: Optional[str] = None,
     sku_id: Optional[str] = None,

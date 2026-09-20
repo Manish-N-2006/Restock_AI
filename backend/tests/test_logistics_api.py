@@ -3,6 +3,14 @@ from app.main import app
 
 client = TestClient(app)
 
+from app.authorization.principal import get_current_principal
+app.dependency_overrides[get_current_principal] = lambda: {
+    "uid": {"type": "ReStockAI::User", "id": "manager-test"},
+    "attrs": {"role": "MANAGER", "store_scope": "*"},
+    "parents": []
+}
+
+
 def test_get_logistics_options_success():
     response = client.get("/api/logistics/options?sku_id=YOG-001&source_store_id=STORE_A&destination_store_id=STORE_B&transfer_quantity=10")
     assert response.status_code == 200
