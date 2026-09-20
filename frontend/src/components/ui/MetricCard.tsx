@@ -1,94 +1,105 @@
 import React from 'react';
+import { ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts';
 
-interface MetricCardProps {
+export interface MetricCardProps {
   title: string;
   value: string | number;
-  subtitle?: string;
-  icon?: React.ReactNode;
+  icon: React.ReactNode;
   trend?: {
     value: number;
     isPositive: boolean;
-    label?: string; // e.g., "vs yesterday"
+    label: string;
   };
-  sparklineData?: number[]; // Array of 10-20 numbers for the mini chart
+  type?: 'risk' | 'recovery' | 'transfers' | 'value';
+  data?: { value: number }[];
+  sparklineData?: number[];
 }
 
-export const MetricCard: React.FC<MetricCardProps> = ({ 
-  title, 
-  value, 
-  subtitle, 
-  icon, 
+export const MetricCard: React.FC<MetricCardProps> = ({
+  title,
+  value,
+  icon,
   trend,
-  sparklineData 
+  type = 'transfers',
+  data,
+  sparklineData,
 }) => {
-  // Generate a simple SVG sparkline if data is provided
-  const renderSparkline = () => {
-    if (!sparklineData || sparklineData.length === 0) return null;
-    
-    const max = Math.max(...sparklineData);
-    const min = Math.min(...sparklineData);
-    const range = max - min || 1;
-    
-    const width = 100;
-    const height = 30;
-    const stepX = width / (sparklineData.length - 1);
-    
-    const points = sparklineData.map((val, i) => {
-      const x = i * stepX;
-      // Invert Y axis for SVG (0 is top)
-      const y = height - ((val - min) / range) * height;
-      return `${x},${y}`;
-    }).join(' ');
+  // Convert array of numbers to object array if sparklineData is passed
+  const chartData = data 
+    ? data 
+    : sparklineData 
+    ? sparklineData.map((val) => ({ value: val }))
+    : [];
 
-    const strokeColor = trend?.isPositive === false ? '#D85A30' : '#1D9E75'; // semantic-red vs semantic-green
-
-    return (
-      <div className="w-[100px] h-[30px] ml-4 flex-shrink-0 opacity-80">
-        <svg width="100%" height="100%" viewBox={`0 -2 ${width} ${height + 4}`} preserveAspectRatio="none">
-          <polyline 
-            points={points} 
-            fill="none" 
-            stroke={strokeColor} 
-            strokeWidth="1.5" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-          />
-        </svg>
-      </div>
-    );
-  };
+  // Color schemes for light theme
+  const theme = {
+    risk: {
+      cardBg: 'bg-amber-50/80 border-amber-200/80',
+      lineColor: '#D97706',
+      badge: 'bg-amber-100 text-amber-800',
+      iconBg: 'bg-amber-100 text-amber-700',
+    },
+    recovery: {
+      cardBg: 'bg-emerald-50/80 border-emerald-200/80',
+      lineColor: '#059669',
+      badge: 'bg-emerald-100 text-emerald-800',
+      iconBg: 'bg-emerald-100 text-emerald-700',
+    },
+    transfers: {
+      cardBg: 'bg-slate-50 border-slate-200/80',
+      lineColor: '#059669',
+      badge: 'bg-emerald-100 text-emerald-800',
+      iconBg: 'bg-slate-200 text-slate-700',
+    },
+    value: {
+      cardBg: 'bg-emerald-600 border-emerald-500 text-white',
+      lineColor: '#FFFFFF',
+      badge: 'bg-emerald-700 text-emerald-100',
+      iconBg: 'bg-emerald-500 text-white',
+    },
+  }[type];
 
   return (
-    <div className="bg-card rounded-md border border-border p-4 flex flex-col justify-between h-[100px] hover:border-text-muted transition-colors">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center space-x-2">
-          {icon && <div className="text-text-secondary">{icon}</div>}
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-text-secondary">{title}</h3>
-        </div>
-      </div>
-      
-      <div className="flex items-end justify-between mt-2">
-        <div>
-          <div className="flex items-baseline space-x-2">
-            <p className="text-2xl font-bold font-mono text-text-primary tracking-tight">{value}</p>
-            {trend && (
-              <span
-                className={`text-xs font-bold font-mono ${
-                  trend.isPositive ? 'text-semantic-green' : 'text-semantic-red'
-                }`}
-              >
-                {trend.isPositive ? '+' : '-'}{Math.abs(trend.value)}%
-              </span>
-            )}
+    <div className={`rounded-2xl p-5 border shadow-xs transition-all overflow-hidden flex flex-col justify-between ${theme.cardBg}`}>
+      <div>
+        {/* Header Row */}
+        <div className="flex justify-between items-start mb-2">
+          <span className={`text-[11px] font-extrabold tracking-wider uppercase ${type === 'value' ? 'text-emerald-100' : 'text-slate-500'}`}>
+            {title}
+          </span>
+          <div className={`p-2 rounded-xl ${theme.iconBg}`}>
+            {icon}
           </div>
-          {(subtitle || (trend && trend.label)) && (
-            <p className="text-[10px] text-text-muted uppercase tracking-widest mt-0.5">
-              {subtitle || trend?.label || 'VS PREV. PERIOD'}
-            </p>
+        </div>
+
+        {/* Value Row */}
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className={`text-2xl font-black ${type === 'value' ? 'text-white' : 'text-slate-900'}`}>
+            {value}
+          </span>
+          {trend && (
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${theme.badge}`}>
+              {trend.isPositive ? '+' : '-'}{trend.value}% {trend.label}
+            </span>
           )}
         </div>
-        
-        {renderSparkline()}
+      </div>
+
+      {/* Clipped Sparkline Chart Container */}
+      <div className="h-16 w-full mt-2 rounded-xl bg-slate-100/80 border border-slate-200/70 p-1 overflow-hidden relative">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" vertical={false} />
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke={theme.lineColor}
+              strokeWidth={2.5}
+              dot={false}
+              isAnimationActive={true}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

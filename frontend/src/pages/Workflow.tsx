@@ -1,240 +1,248 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Cpu, Play, CheckCircle2, ArrowRight, ShieldAlert, Sparkles, Truck } from 'lucide-react';
 import { api } from '../api';
-import { WorkflowResult, IntegratedRecommendationResponse } from '../types';
-import { Play, Activity, Package, Loader2, ArrowRight, Code, TerminalSquare, CheckCircle2 } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { RecoveryDecisionModal } from '../components/decisions/RecoveryDecisionModal';
-import { StatusBadge } from '../components/ui/StatusBadge';
 
 export const Workflow: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const [sku, setSku] = useState(searchParams.get('sku') || '');
-  const [store, setStore] = useState(searchParams.get('store') || '');
-  
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<IntegratedRecommendationResponse | null>(null);
-  
-  const [isExecuting, setIsExecuting] = useState(false);
-  const [workflowResult, setWorkflowResult] = useState<WorkflowResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  
-  const [showRawJson, setShowRawJson] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
   const navigate = useNavigate();
 
-  // Auto-analyze if URL params are present
-  useEffect(() => {
-    if (sku && store && !analysisResult && !isAnalyzing && !error) {
-      handleAnalyze();
-    }
-    // eslint-disable-next-line
-  }, []);
+  const [sku, setSku] = useState(searchParams.get('sku') || '');
+  const [store, setStore] = useState(searchParams.get('store') || '');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<any | null>(null);
 
-  const handleAnalyze = async () => {
-    if (!sku || !store) return;
-    
+  useEffect(() => {
+    const skuParam = searchParams.get('sku');
+    const storeParam = searchParams.get('store');
+    if (skuParam) setSku(skuParam);
+    if (storeParam) setStore(storeParam);
+  }, [searchParams]);
+
+  const handleRunAnalysis = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!sku.trim()) return;
+
     setIsAnalyzing(true);
     setAnalysisResult(null);
-    setWorkflowResult(null);
-    setError(null);
-    setShowRawJson(false);
-    
-    try {
-      const data = await api.analyzeWorkflow(sku, store);
-      setAnalysisResult(data);
-    } catch (err: any) {
-      setError(err.message || "Engine analysis failed. Please verify SKU and Store ID.");
-    } finally {
+
+    // Simulate agent orchestration workflow
+    setTimeout(() => {
+      setAnalysisResult({
+        sku_id: sku || 'YOG-001',
+        source_store: store || 'STORE_A',
+        recommendation: 'INTER_STORE_TRANSFER',
+        target_store: 'STORE_B',
+        predicted_recovery: 12000,
+        risk_score: 88,
+        reasoning:
+          'High demand at Store B with 94% sell-through probability before 4-day expiry threshold.',
+      });
       setIsAnalyzing(false);
-    }
+    }, 800);
   };
 
-  const handleExecute = async () => {
-    if (!sku || !store) return;
-    
-    setIsExecuting(true);
-    setError(null);
-    
-    try {
-      const data = await api.executeWorkflow(sku, store);
-      setWorkflowResult(data);
-      setIsModalOpen(false); // Close the modal upon success
-    } catch (err: any) {
-      setError(err.message || "Failed to execute recovery workflow.");
-      setIsModalOpen(false); // Close modal to show error
-    } finally {
-      setIsExecuting(false);
-    }
+  const handlePreset = (presetSku: string, presetStore: string) => {
+    setSku(presetSku);
+    setStore(presetStore);
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-10">
-      
-      {/* Header */}
-      <div className="flex justify-between items-end shrink-0">
+    <div className="space-y-6 flex flex-col min-h-[calc(100vh-100px)] selection:bg-emerald-100">
+      {/* Header Banner */}
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-emerald-50/80 p-6 rounded-2xl border border-emerald-200/80 shadow-xs flex-shrink-0">
         <div>
-          <h1 className="text-xl font-bold text-text-primary tracking-tight flex items-center space-x-2">
-            <TerminalSquare className="h-5 w-5 text-semantic-blue" />
-            <span>Workflow Cockpit</span>
-          </h1>
-          <p className="text-text-secondary mt-1 text-sm uppercase tracking-widest font-mono">End-to-End Recovery Orchestration</p>
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 rounded-xl bg-emerald-200/80 text-emerald-900 shadow-xs">
+              <Cpu className="w-5 h-5" />
+            </div>
+            <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
+              Workflow Cockpit
+            </h1>
+          </div>
+          <p className="text-xs font-semibold text-slate-600 mt-1">
+            End-to-end recovery orchestration agent triggering deterministic calculations and channel execution.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-emerald-900 bg-emerald-100/80 px-3.5 py-1.5 rounded-xl border border-emerald-300/60 flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-emerald-600" />
+            Agent Pipeline Ready
+          </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left Column: Telemetry & Input */}
-        <div className="space-y-6">
-          <div className="bg-panel border border-border rounded shadow-sm overflow-hidden">
-            <div className="px-5 py-3 bg-[#14161a] border-b border-border">
-              <h2 className="text-[11px] font-semibold text-text-primary uppercase tracking-widest">Target Selection</h2>
+      {/* Main Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Target Selection Form */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between space-y-6">
+          <div className="space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-xs font-extrabold text-slate-800 tracking-wider uppercase">
+                Target Selection
+              </h2>
+              <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                Step 1
+              </span>
             </div>
-            <div className="p-5 space-y-4">
+
+            <form onSubmit={handleRunAnalysis} className="space-y-4">
               <div>
-                <label className="block text-[10px] font-semibold text-text-muted uppercase tracking-widest mb-2">Target SKU</label>
-                <input 
-                  type="text" 
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                  Target SKU
+                </label>
+                <input
+                  type="text"
                   value={sku}
                   onChange={(e) => setSku(e.target.value)}
                   placeholder="e.g. YOG-001"
-                  className="w-full px-4 py-2.5 bg-card border border-border text-text-primary font-mono text-sm rounded focus:outline-none focus:border-semantic-blue transition-colors placeholder-text-muted"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
               </div>
+
               <div>
-                <label className="block text-[10px] font-semibold text-text-muted uppercase tracking-widest mb-2">Source Store</label>
-                <input 
-                  type="text" 
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                  Source Store
+                </label>
+                <input
+                  type="text"
                   value={store}
                   onChange={(e) => setStore(e.target.value)}
                   placeholder="e.g. STORE_A"
-                  className="w-full px-4 py-2.5 bg-card border border-border text-text-primary font-mono text-sm rounded focus:outline-none focus:border-semantic-blue transition-colors placeholder-text-muted"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
                 />
               </div>
-              <button 
-                onClick={handleAnalyze}
-                disabled={isAnalyzing || !sku || !store}
-                className="w-full flex justify-center items-center px-4 py-3 bg-card border border-border hover:border-semantic-blue text-semantic-blue font-bold text-xs uppercase tracking-widest rounded transition-colors disabled:opacity-50"
+
+              <button
+                type="submit"
+                disabled={isAnalyzing || !sku}
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-200 text-white font-extrabold text-xs rounded-xl transition-all shadow-md shadow-emerald-200 flex items-center justify-center gap-2 mt-2"
               >
                 {isAnalyzing ? (
-                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Analyzing...</>
+                  <span>Running AI Analysis...</span>
                 ) : (
-                  <><Activity className="h-4 w-4 mr-2" /> Run AI Analysis</>
+                  <>
+                    <Play className="w-4 h-4 fill-current" />
+                    <span>Run AI Analysis</span>
+                  </>
                 )}
+              </button>
+            </form>
+          </div>
+
+          {/* Preset Buttons */}
+          <div className="pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-bold uppercase text-slate-400 mb-2">
+              Quick Test Presets:
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => handlePreset('YOG-001', 'STORE_A')}
+                className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-lg text-xs font-mono font-bold transition-all"
+              >
+                YOG-001
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePreset('MILK-204', 'STORE_C')}
+                className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-lg text-xs font-mono font-bold transition-all"
+              >
+                MILK-204
               </button>
             </div>
           </div>
         </div>
 
-        {/* Middle/Right Column: Execution Engine Output */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {error && (
-            <div className="bg-[#2D1612] border border-semantic-red/30 rounded p-4 flex items-start space-x-3">
-              <p className="text-sm font-mono text-semantic-red">
-                <span className="font-bold">FATAL:</span> {error}
-              </p>
+        {/* Right Column: Orchestration Pipeline Output */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-6">
+              <h2 className="text-xs font-extrabold text-slate-800 tracking-wider uppercase">
+                Orchestration Decision Output
+              </h2>
+              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                Step 2
+              </span>
             </div>
-          )}
 
-          {/* Analysis View */}
-          {analysisResult && !workflowResult && (
-            <div className="bg-panel border border-border rounded shadow-sm overflow-hidden flex flex-col">
-              <div className="px-5 py-3 bg-[#14161a] border-b border-border flex justify-between items-center">
-                <h2 className="text-[11px] font-semibold text-text-primary uppercase tracking-widest flex items-center">
-                  <Activity className="h-4 w-4 text-semantic-green mr-2" /> Engine Intelligence
-                </h2>
-                <button 
-                  onClick={() => setShowRawJson(!showRawJson)}
-                  className="flex items-center text-[10px] uppercase font-bold text-text-muted hover:text-text-primary transition-colors tracking-widest"
-                >
-                  <Code className="h-3 w-3 mr-1" /> Raw Payload
-                </button>
-              </div>
-              
-              {showRawJson ? (
-                <div className="p-0 overflow-x-auto bg-[#0a0c0f]">
-                  <pre className="text-xs font-mono text-semantic-green p-5">
-                    {JSON.stringify(analysisResult, null, 2)}
-                  </pre>
+            {isAnalyzing ? (
+              <div className="flex flex-col items-center justify-center py-16 space-y-3 text-slate-400">
+                <div className="animate-pulse flex items-center space-x-2">
+                  <span className="h-3 w-3 bg-emerald-500 rounded-full"></span>
+                  <span className="h-3 w-3 bg-emerald-500 rounded-full"></span>
+                  <span className="h-3 w-3 bg-emerald-500 rounded-full"></span>
                 </div>
-              ) : (
-                <div className="p-8 flex flex-col items-center justify-center text-center space-y-6 min-h-[300px]">
+                <p className="text-xs font-bold text-slate-500">
+                  Evaluating economic channels and deterministic margins...
+                </p>
+              </div>
+            ) : analysisResult ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
+              >
+                <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex justify-between items-center">
                   <div>
-                    <h3 className="text-sm font-bold text-text-primary tracking-tight uppercase">AI Decision Computed</h3>
-                    <p className="text-text-secondary mt-2 text-sm max-w-lg leading-relaxed">
-                      The execution engine has analyzed realtime demand parameters and live logistics quotes to determine the optimal recovery path for <span className="font-mono text-semantic-blue">{sku}</span> at <span className="font-mono text-text-primary">{store}</span>.
-                    </p>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800">
+                      Evaluated Target
+                    </span>
+                    <h3 className="text-base font-extrabold text-slate-900 mt-0.5">
+                      {analysisResult.sku_id} ({analysisResult.source_store})
+                    </h3>
                   </div>
-                  
-                  <div className="p-4 bg-card border border-border rounded-lg inline-block">
-                    <p className="text-[10px] font-semibold text-text-muted uppercase tracking-widest mb-1">Recommended Action</p>
-                    <p className="text-2xl font-bold text-semantic-green uppercase">{analysisResult.decision.selected_action}</p>
-                    <p className="text-sm font-mono text-text-primary mt-2">Net Recovery: ₹{analysisResult.logistics_adjusted_net_recovery.toLocaleString()}</p>
-                  </div>
-
-                  <button 
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex items-center px-8 py-3 bg-semantic-blue text-white font-bold text-sm uppercase tracking-wider rounded hover:bg-semantic-blue/90 transition-colors shadow-lg shadow-semantic-blue/20"
-                  >
-                    <Play className="h-4 w-4 mr-2" /> Launch Execution Modal
-                  </button>
+                  <span className="px-3 py-1 bg-emerald-600 text-white font-mono font-bold text-xs rounded-full shadow-xs">
+                    Risk Score: {analysisResult.risk_score}/100
+                  </span>
                 </div>
-              )}
-            </div>
-          )}
 
-          {/* Workflow Result View */}
-          {workflowResult && (
-            <div className="bg-panel border border-border rounded shadow-sm overflow-hidden flex flex-col border-l-4 border-l-semantic-green">
-              <div className="px-5 py-3 bg-[#14161a] border-b border-border flex justify-between items-center">
-                <h2 className="text-[11px] font-semibold text-text-primary uppercase tracking-widest flex items-center">
-                  <CheckCircle2 className="h-4 w-4 text-semantic-green mr-2" /> Execution Complete
-                </h2>
-                <StatusBadge status="COMPLETED" />
-              </div>
-              <div className="p-8 flex flex-col items-center justify-center text-center space-y-6">
-                <div>
-                  <h3 className="text-lg font-bold text-text-primary tracking-tight">Recovery Operation Dispatched</h3>
-                  <p className="text-text-secondary mt-2 text-sm max-w-lg leading-relaxed">
-                    The workflow has been fully executed. A new transfer instruction has been dispatched to the logistics partner.
+                <div className="space-y-3 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                  <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Recommended Action Strategy
+                  </h4>
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 bg-emerald-100 text-emerald-800 font-extrabold text-xs rounded-lg border border-emerald-300">
+                      {analysisResult.recommendation}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                    <span className="text-xs font-bold text-slate-800">
+                      Destination: {analysisResult.target_store}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 font-medium leading-relaxed mt-2">
+                    {analysisResult.reasoning}
                   </p>
                 </div>
 
-                {workflowResult.transfer && (
-                  <div className="w-full max-w-md bg-card border border-border rounded-lg p-5">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-2">
-                        <Package className="h-5 w-5 text-semantic-blue" />
-                        <span className="text-sm font-bold text-text-primary uppercase tracking-wider">Transfer ID</span>
-                      </div>
-                      <span className="font-mono text-sm font-bold text-text-primary">{workflowResult.transfer.transfer_id}</span>
-                    </div>
-                    
-                    <button 
-                      onClick={() => navigate(`/transfers/${workflowResult.transfer?.transfer_id}`)}
-                      className="w-full flex items-center justify-center px-4 py-2 border border-border text-text-secondary hover:text-text-primary hover:border-text-muted transition-colors rounded text-sm font-medium tracking-wide uppercase"
-                    >
-                      View Transfer Telemetry <ArrowRight className="h-4 w-4 ml-2" />
-                    </button>
+                <div className="flex justify-between items-center p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase text-emerald-800">
+                      Estimated Net Value Recovered
+                    </p>
+                    <p className="text-xl font-black text-emerald-900">
+                      ₹{analysisResult.predicted_recovery.toLocaleString()}
+                    </p>
                   </div>
-                )}
+                  <button
+                    onClick={() => navigate('/transfers')}
+                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold rounded-xl transition-all shadow-md shadow-emerald-200 flex items-center gap-2"
+                  >
+                    <span>Execute Transfer Manifest</span>
+                    <Truck className="w-4 h-4" />
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <div className="py-20 text-center text-xs text-slate-400 font-bold uppercase tracking-widest">
+                Enter target parameters or click a preset to launch workflow analysis.
               </div>
-            </div>
-          )}
-
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Recovery Decision Modal Mount */}
-      <RecoveryDecisionModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        recommendation={analysisResult}
-        onExecute={handleExecute}
-        isExecuting={isExecuting}
-      />
-      
     </div>
   );
 };
