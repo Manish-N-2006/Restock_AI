@@ -50,14 +50,14 @@ export const Workflow: React.FC = () => {
     }
   };
 
-  const handleExecute = async () => {
+  const handleExecute = async (partnerId?: string) => {
     if (!sku || !store) return;
     
     setIsExecuting(true);
     setError(null);
     
     try {
-      const data = await api.executeWorkflow(sku, store);
+      const data = await api.executeWorkflow(sku, store, partnerId);
       setWorkflowResult(data);
       setIsModalOpen(false); // Close the modal upon success
     } catch (err: any) {
@@ -170,7 +170,7 @@ export const Workflow: React.FC = () => {
                   <div className="p-4 bg-card border border-border rounded-lg inline-block">
                     <p className="text-[10px] font-semibold text-text-muted uppercase tracking-widest mb-1">Recommended Action</p>
                     <p className="text-2xl font-bold text-semantic-green uppercase">{analysisResult.decision.selected_action}</p>
-                    <p className="text-sm font-mono text-text-primary mt-2">Net Recovery: ₹{analysisResult.logistics_adjusted_net_recovery.toLocaleString()}</p>
+                    <p className="text-sm font-mono text-text-primary mt-2">Net Recovery: ₹{(analysisResult as any).logistics?.logistics_adjusted_net_recovery?.toLocaleString() ?? 0}</p>
                   </div>
 
                   <button 

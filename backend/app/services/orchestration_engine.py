@@ -68,7 +68,8 @@ def run_complete_recovery_workflow(
     actual_units_sold: int,
     actual_recovered_value: float,
     actual_logistics_cost: float,
-    actual_handling_cost: float
+    actual_handling_cost: float,
+    partner_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     MUTATES STATE.
@@ -98,15 +99,15 @@ def run_complete_recovery_workflow(
     
     logistics = analysis["logistics"]
     if not logistics.get("logistics") or not logistics.get("logistics").get("selected_partner"):
-        return {
-            "workflow_status": "FAILED",
-            "failed_stage": "LOGISTICS",
-            "message": "No eligible logistics partner available before expiry."
-        }
+        if not partner_id:
+            return {
+                "workflow_status": "FAILED",
+                "failed_stage": "LOGISTICS",
+                "message": "No eligible logistics partner available before expiry."
+            }
         
     destination_store_id = analysis["decision"]["selected_destination_store_id"]
     quantity = analysis["decision"]["recommended_quantity"]
-    partner_id = logistics["logistics"]["selected_partner"]["partner_id"]
     
     if not destination_store_id:
         return {
@@ -133,7 +134,7 @@ def run_complete_recovery_workflow(
                 transfer = existing
                 logger.info(f"Found existing transfer: {transfer.transfer_id}")
             else:
-                transfer = create_transfer_from_recommendation(db, sku_id, source_store_id)
+                transfer = create_transfer_from_recommendation(db, sku_id, source_store_id, partner_id)
                 logger.info(f"transfer_created: {transfer.transfer_id}")
                 
             transfer_id = transfer.transfer_id

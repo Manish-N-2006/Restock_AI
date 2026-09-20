@@ -40,13 +40,13 @@ def generate_transfer_id() -> str:
     unique_part = str(uuid.uuid4()).split('-')[0].upper()
     return f"TR-{unique_part}"
 
-def create_transfer_from_recommendation(db: Session, sku_id: str, source_store_id: str) -> TransferOrder:
+def create_transfer_from_recommendation(db: Session, sku_id: str, source_store_id: str, partner_id: Optional[str] = None) -> TransferOrder:
     rec = get_integrated_recommendation(db, sku_id, source_store_id)
     
     if rec.decision.selected_action != RecoveryActionType.TRANSFER:
         raise HTTPException(status_code=400, detail="Recommendation is not a transfer.")
         
-    if not rec.transfer_still_viable:
+    if not rec.transfer_still_viable and not partner_id:
         raise HTTPException(status_code=400, detail="Transfer is not economically viable after logistics adjustment.")
         
     source_inv = db.query(Inventory).filter(Inventory.sku_id == sku_id, Inventory.store_id == source_store_id).first()
@@ -54,6 +54,24 @@ def create_transfer_from_recommendation(db: Session, sku_id: str, source_store_i
     if source_inv.quantity - source_inv.reserved_quantity < rec.decision.recommended_quantity:
         raise HTTPException(status_code=400, detail="Insufficient available inventory at source store.")
         
+    # Override logic for manual partner selection
+    selected_partner = rec.logistics.selected_partner
+    delivery_cost = rec.logistics.delivery_cost
+    eta_minutes = rec.logistics.eta_minutes
+    logistics_adjusted_net_recovery = rec.logistics_adjusted_net_recovery
+    
+    if partner_id:
+        from .logistics_engine import evaluate_logistics_options
+        options = evaluate_logistics_options(
+            db, sku_id, source_store_id, rec.decision.selected_destination_store_id, rec.decision.recommended_quantity
+        )
+        partner_match = next((p for p in options.options if p.partner_id == partner_id), None)
+        if partner_match:
+            selected_partner = partner_match
+            delivery_cost = partner_match.estimated_delivery_cost
+            eta_minutes = partner_match.average_eta_minutes
+            logistics_adjusted_net_recovery = rec.decision.expected_net_recovery - delivery_cost
+    
     transfer_id = generate_transfer_id()
     
     order = TransferOrder(
@@ -64,13 +82,13 @@ def create_transfer_from_recommendation(db: Session, sku_id: str, source_store_i
         destination_store_id=rec.decision.selected_destination_store_id,
         quantity=rec.decision.recommended_quantity,
         status=TransferStatus.CREATED,
-        logistics_partner_id=rec.logistics.selected_partner.partner_id,
-        logistics_partner_name=rec.logistics.selected_partner.partner_name,
-        distance_km=rec.logistics.selected_partner.distance_km,
-        estimated_delivery_cost=rec.logistics.delivery_cost,
-        estimated_eta_minutes=rec.logistics.eta_minutes,
+        logistics_partner_id=selected_partner.partner_id,
+        logistics_partner_name=selected_partner.partner_name,
+        distance_km=selected_partner.distance_km,
+        estimated_delivery_cost=delivery_cost,
+        estimated_eta_minutes=eta_minutes,
         expected_net_recovery=rec.decision.expected_net_recovery,
-        logistics_adjusted_net_recovery=rec.logistics_adjusted_net_recovery
+        logistics_adjusted_net_recovery=logistics_adjusted_net_recovery
     )
     
     db.add(order)

@@ -72,7 +72,55 @@ def search_history(
 ) -> Dict[str, Any]:
     client = get_opensearch_client()
     if not client:
-        return {"total": 0, "results": [], "error": "OpenSearch is unavailable"}
+        # Graceful Fallback to SQLite
+        from ..database import SessionLocal
+        from ..models.transfer import TransferOrder
+        from ..models.outcome import Outcome
+        
+        with SessionLocal() as db:
+            from sqlalchemy import or_
+            query = db.query(TransferOrder).join(Outcome, TransferOrder.transfer_id == Outcome.transfer_id)
+            
+            if q:
+                search_term = f"%{q}%"
+                query = query.filter(
+                    or_(
+                        TransferOrder.sku_id.ilike(search_term),
+                        TransferOrder.product_name.ilike(search_term),
+                        TransferOrder.source_store_id.ilike(search_term),
+                        TransferOrder.destination_store_id.ilike(search_term)
+                    )
+                )
+                
+            if sku_id:
+                query = query.filter(TransferOrder.sku_id == sku_id)
+            if source_store_id:
+                query = query.filter(TransferOrder.source_store_id == source_store_id)
+            if destination_store_id:
+                query = query.filter(TransferOrder.destination_store_id == destination_store_id)
+            if outcome_status:
+                query = query.filter(Outcome.outcome_status == outcome_status)
+                
+            results = query.order_by(TransferOrder.created_at.desc()).limit(limit).all()
+            
+            mapped_results = []
+            for t in results:
+                o = db.query(Outcome).filter(Outcome.transfer_id == t.transfer_id).first()
+                mapped_results.append({
+                    "transfer_id": t.transfer_id,
+                    "sku_id": t.sku_id,
+                    "source_store_id": t.source_store_id,
+                    "destination_store_id": t.destination_store_id,
+                    "decision": {"action": "TRANSFER"},
+                    "outcome": {
+                        "actual_net_recovery": o.actual_net_recovery if o else 0,
+                        "recovery_accuracy_percentage": o.recovery_accuracy_percentage if o else 0,
+                        "actual_units_sold": o.actual_units_sold if o else 0,
+                        "outcome_status": o.outcome_status.value if o else "PENDING"
+                    }
+                })
+                
+            return {"total": len(mapped_results), "results": mapped_results}
         
     must_clauses = []
     
@@ -131,7 +179,32 @@ def search_similar_scenarios(
 def get_history_summary() -> Dict[str, Any]:
     client = get_opensearch_client()
     if not client:
-        return {"error": "OpenSearch is unavailable"}
+        # Graceful Fallback to SQLite
+        from ..database import SessionLocal
+        from ..models.transfer import TransferOrder
+        from ..models.outcome import Outcome
+        from sqlalchemy import func
+        
+        with SessionLocal() as db:
+            total_indexed = db.query(TransferOrder).filter(TransferOrder.status == "COMPLETED").count()
+            total_finalized = db.query(Outcome).filter(Outcome.outcome_status == "FINALIZED").count()
+            total_units = db.query(func.sum(TransferOrder.quantity)).filter(TransferOrder.status == "COMPLETED").scalar() or 0
+            
+            # Outcome sums
+            net_recovery = db.query(func.sum(Outcome.actual_net_recovery)).filter(Outcome.outcome_status == "FINALIZED").scalar() or 0
+            avg_accuracy = db.query(func.avg(Outcome.recovery_accuracy_percentage)).filter(Outcome.outcome_status == "FINALIZED").scalar()
+            avg_sell = db.query(func.avg(Outcome.sell_through_rate)).filter(Outcome.outcome_status == "FINALIZED").scalar()
+            
+            return {
+                "total_indexed_transfers": total_indexed,
+                "total_finalized_outcomes": total_finalized,
+                "total_units_moved": total_units,
+                "total_actual_net_recovery": net_recovery,
+                "average_recovery_accuracy": avg_accuracy,
+                "average_sell_through_rate": avg_sell,
+                "transfer_count_by_action": {"TRANSFER": total_indexed},
+                "transfer_count_by_partner": {"SQLite Fallback": total_indexed}
+            }
         
     try:
         res = client.search(
