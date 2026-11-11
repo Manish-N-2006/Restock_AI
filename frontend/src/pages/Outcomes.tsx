@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
 import { Outcome } from '../types';
-import { Activity, TrendingUp, DollarSign, CheckCircle2 } from 'lucide-react';
+import { Activity, TrendingUp, CheckCircle2 } from 'lucide-react';
 
 // Fallback sample data to populate the outcomes ledger when the database is empty
 const sampleOutcomes: any[] = [

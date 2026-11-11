@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Cpu, Play, CheckCircle2, ArrowRight, ShieldAlert, Sparkles, Truck } from 'lucide-react';
-import { api } from '../api';
+import { Cpu, Play, ArrowRight, Sparkles, Truck } from 'lucide-react';
 
 export const Workflow: React.FC = () => {
   const [searchParams] = useSearchParams();

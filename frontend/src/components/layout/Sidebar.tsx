@@ -10,6 +10,7 @@ import {
   Bot,
   Workflow,
   Store,
+  CreditCard,
 } from 'lucide-react';
 import { api } from '../../api';
 import { RiskItem } from '../../types';
