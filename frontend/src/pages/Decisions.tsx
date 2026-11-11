@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { GitBranch, ArrowRight, ShieldCheck } from 'lucide-react';
+import { GitBranch, Truck, Tag, RefreshCw, ArrowRight, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { api } from '../api';
 
 interface RecoveryOption {
   action: 'TRANSFER' | 'DISCOUNT' | 'BUNDLE' | 'PROMOTE' | 'RETURN' | 'DISPOSE';

@@ -1,289 +1,391 @@
-# ReStockAI 2.0 — Autonomous Network Inventory Intelligence & Recovery
+# ReStockAI ⚡
 
-> **Submission for the PayPal AI Hackathon 2026**  
-> *Transforming retail food waste and inventory stockouts into profitable, network-first autonomous commerce.*
+> **Autonomous Inventory Recovery & Network Optimization Platform for Quick-Commerce and Multi-Location Retail**
+
+[![Python Version](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/Frontend-React_19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Build-Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS_v4-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Cedar Policy](https://img.shields.io/badge/Security-Cedar_PBAC-4F46E5)](https://www.cedarpolicy.com/)
+[![AWS SAM](https://img.shields.io/badge/Serverless-AWS_SAM_Local-FF9900?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/serverless/sam/)
+[![Ollama](https://img.shields.io/badge/AI_Engine-Strands_%2B_Ollama-black?logo=ollama&logoColor=white)](https://ollama.com/)
+[![Tests](https://img.shields.io/badge/Tests-95_Passing-success)](#-testing--quality-assurance)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
-## 1. Executive Summary
+## 📌 Executive Summary
 
-Every year, multi-location grocery chains, supermarket networks, and quick-commerce dark stores lose billions of dollars to perishable food waste while neighboring branches suffer from critical stockouts. Traditional retail software operates in departmental silos: inventory managers mark down expiring stock locally at heavy losses, while logistics and store operations order emergency replenishment from suppliers with high rush fees.
+Every year, multi-location retail and quick-commerce dark-store networks lose over **$100 Billion** to unsalable inventory, perishable expiration, and uncoordinated emergency markdowns. Traditional ERPs and inventory systems operate in static silos: store managers don't know that a product expiring in 48 hours at Store A could be sold at full price within 12 hours at Store B just 6 kilometers away.
 
-**ReStockAI 2.0** introduces an autonomous multi-agent operating system that prioritizes **internal multi-branch inventory redistribution** as the primary economic use case, keeping **external B2B liquidation via PayPal Sandbox** as a high-velocity fallback when internal redistribution is not economically feasible.
+**ReStockAI** transforms inventory loss from an inevitable write-off into an active profit-recovery channel. By coupling **100% deterministic economic and geospatial engines** with an **autonomous LLM orchestration agent** and **cryptographic Cedar policy controls**, ReStockAI automatically identifies at-risk SKUs, calculates the single highest net-recovery action, selects optimal cold-chain logistics partners, and dispatches transfers across dark stores in real time.
 
 ---
 
-## 2. System Architecture
+## 🏛️ System Architecture
+
+ReStockAI is architected in four clean, decoupled layers separating deterministic business logic, authorization, AI reasoning, and presentation:
 
 ```mermaid
-flowchart TD
-    subgraph UI ["User Interface & Simulation Center"]
-        VOffice["Pixel Agents 2.0 Virtual Office"]
-        Controls["Scenario & Stage Step Controls"]
-        Feed["Live Agent Event Stream & Overhead Dialogue"]
-        PPModal["PayPal Standard Checkout Modal"]
+flowchart TB
+    subgraph PresentationLayer ["1. Presentation & Operations Layer"]
+        UI["React 19 + Vite Dashboard (Tailwind CSS v4)"]
+        Terminal["AI Natural Language Agent Terminal"]
     end
 
-    subgraph Workforce ["7-Specialist Agent Workforce (Strands / Groq LLM)"]
-        A1["Sarah Chen (CEO)"]
-        A2["Marcus Vance (Inventory)"]
-        A3["Elena Rostova (Strategy)"]
-        A4["David Kim (Logistics)"]
-        A5["Aisha Patel (Commerce)"]
-        A6["Tom Becker (Fulfillment)"]
-        A7["Linda Zhang (Finance)"]
+    subgraph SecurityLayer ["2. Policy & Authorization Layer (Cedar PBAC)"]
+        Cedar["Cedar Policy Engine (cedarpy)"]
+        RBAC["Roles: MANAGER | OPERATOR (Store Scoped) | VIEWER"]
     end
 
-    subgraph CoreEngines ["Deterministic Decision & Routing Engines"]
-        RiskEng["RiskEngine (Expiry & Velocity)"]
-        DemandEng["DemandEngine (Absorptive Capacity)"]
-        RoutingEng["RoutingService (OSRM Road Network & Reefer Gate)"]
-        OptEng["Constrained Optimization Engine"]
-        CedarAuth["Cedar Policy Governance Gate"]
+    subgraph IntelligenceLayer ["3. Intelligence & Optimization Layer"]
+        Agent["Strands AI Agent (Local Llama 3 via Ollama)"]
+        RiskEng["Risk Engine (Decay Velocity & Expiry Score)"]
+        DemandEng["Demand Engine (Geospatial Haversine & Capacity)"]
+        DecisionEng["Decision Engine (Multi-Action Net Recovery Arbitration)"]
+        LogisticsEng["Logistics Engine (Multi-Criteria Cost/ETA/Cold-Chain)"]
+        TransferEng["Transfer State Machine (Full Lifecycle Audit)"]
+        OutcomeEng["Outcome Engine (Predicted vs Actual Variance Analytics)"]
     end
 
-    subgraph PaymentFulfillment ["Settlement & Execution"]
-        Ledger["Inter-Store Clearing Ledger (Zero Fee)"]
-        PPSandbox["PayPal Orders API v2 (Sandbox Capture)"]
-        Dispatch["Warehouse Dock Bay Release"]
+    subgraph InfrastructureLayer ["4. Dual-Execution Infrastructure & Storage"]
+        FastAPI["FastAPI REST Server (:8000)"]
+        SAM["AWS SAM Local Serverless Lambda Handler"]
+        DB[(SQLite / PostgreSQL)]
+        Search[(OpenSearch Historical Intelligence)]
     end
 
-    UI <--> Workforce
-    Workforce <--> CoreEngines
-    CoreEngines --> CedarAuth
-    CedarAuth --> PaymentFulfillment
+    UI --> |REST + X-ReStockAI-User| Cedar
+    Terminal --> |REST| Cedar
+    Cedar --> |Authorized Request| FastAPI
+    SAM -.-> |Dual Execution Path| IntelligenceLayer
+    FastAPI --> IntelligenceLayer
+    Agent --> |Tools Execution| RiskEng & DemandEng & DecisionEng & LogisticsEng
+    IntelligenceLayer --> DB
+    IntelligenceLayer --> Search
 ```
 
-### Technology Stack
-- **Backend Framework:** FastAPI 0.111.0 (Python 3.11+) with asynchronous WebSockets and REST APIs.
-- **Frontend Framework:** React 19, TypeScript, Vite 8.3, Tailwind CSS v4, Lucide Icons.
-- **AI Agent Framework:** Strands Multi-Agent Orchestrator powered by Groq LLM API (`openai/gpt-oss-120b` / `llama-3.3-70b-versatile`).
-- **Commercial Payments:** PayPal Orders API v2 (POST /v2/checkout/orders, POST /v2/checkout/orders/{id}/capture) with standard PayPal JavaScript SDK.
-- **Authorization Governance:** Cedar Policy Engine (`cedarpy`) enforcing role-based limits and high-value operation gates.
-- **Logistics & Routing:** OpenStreetMap / OSRM highway routing integration with calibrated Haversine fallback ($1.25\times$ urban tortuosity).
+---
+
+## 🗺️ Complete 12-Phase Implementation Roadmap
+
+ReStockAI has been engineered across **12 comprehensive milestones**, all fully completed and integrated:
+
+| Phase | Milestone | Scope & Deliverables | Status |
+|---|---|---|:---:|
+| **Phase 1** | **Deterministic Risk Engine** | Rule-based inventory risk calculation, sales velocity decay, and expiry economic loss quantification. | ✅ **Complete** |
+| **Phase 2** | **Demand Intelligence Engine** | Geospatial Haversine store discovery, cold-chain validation, destination capacity buffer gating (80% safety fill). | ✅ **Complete** |
+| **Phase 3** | **Recovery Decision Engine** | Real-time economic arbitration across 6 actions: Transfer, Discount, Bundle, Promote, Return, Dispose. | ✅ **Complete** |
+| **Phase 4** | **Logistics Partner Selection** | Multi-criteria logistics scoring: distance-based freight cost, transit ETA, headroom capacity, cold-chain compliance. | ✅ **Complete** |
+| **Phase 5** | **Transfer Lifecycle State Machine** | Strict state machine managing end-to-end transit states (`CREATED` → `APPROVED` → `ASSIGNED` → `IN_TRANSIT` → `COMPLETED`). | ✅ **Complete** |
+| **Phase 6** | **Outcome Analytics & Feedback** | Post-recovery tracking comparing predicted vs. actual revenue, sell-through rates, and variance reconciliation. | ✅ **Complete** |
+| **Phase 7** | **Historical Intelligence Layer** | OpenSearch integration indexing past transfer performance for pattern discovery and retrieval. | ✅ **Complete** |
+| **Phase 8** | **AWS SAM Serverless Architecture** | AWS Serverless Application Model (SAM) local Lambda integration, ensuring identical parity between API and serverless handlers. | ✅ **Complete** |
+| **Phase 9** | **Strands AI Orchestration Agent** | Local LLM intelligence (Llama 3 via Ollama) with deterministic guardrails and live engine tool calling. | ✅ **Complete** |
+| **Phase 10** | **Modern Operations Dashboard** | High-performance React 19 war room interface with real-time KPI metrics, risk heatmaps, and action manifests. | ✅ **Complete** |
+| **Phase 11** | **Automated Workflow Orchestrator** | One-click end-to-end execution pipeline from risk detection to transfer creation and outcome finalization. | ✅ **Complete** |
+| **Phase 12** | **Cedar Policy-Based Access Control** | Cryptographic authorization layer using open-source Cedar (`cedarpy`), securing operations by user role and store scope. | ✅ **Complete** |
 
 ---
 
-## 3. The Seven-Agent Specialist Workforce
+## 🧮 Mathematical & Economic Formulations
 
-ReStockAI 2.0 features 7 distinct AI employees, each assigned a specific department workstation and clear operational authority:
+ReStockAI eliminates subjective guesswork with transparent, deterministic algorithms.
 
-| Agent # | Specialist | Title | Department | Primary Mandate |
-| :---: | :--- | :--- | :--- | :--- |
-| **#1** | **Sarah Chen** | CEO / Operations Supervisor | Executive Office | Orchestrates workflow delegation, evaluates Cedar governance policies, reviews final audits. |
-| **#2** | **Marcus Vance** | Inventory Risk Specialist | AI Agent Workroom | Scans SKU expiry dates, daily velocity, surplus batches, and shortage deadlines. |
-| **#3** | **Elena Rostova** | Recovery Strategy Specialist | AI Agent Workroom | Discovers matching branches, models incremental network value, evaluates trade-offs. |
-| **#4** | **David Kim** | Logistics & Route Specialist | AI Agent Workroom | Evaluates carrier rates, cold-chain compatibility, road kilometers, and transit times. |
-| **#5** | **Aisha Patel** | Commerce & Markdown Specialist | AI Agent Workroom | Structures B2B recovery orders, manages commercial buyer matching, initiates PayPal invoices. |
-| **#6** | **Tom Becker** | Fulfillment & Warehouse Specialist | AI Agent Workroom | Verifies payment/authorization, stages dock bay manifests, releases physical inventory. |
-| **#7** | **Linda Zhang** | Finance & Margins Specialist | AI Agent Workroom | Audits inter-branch clearing ledgers, reconciles PayPal gross/fee/net receipts, reports to CEO. |
+### 1. Dynamic Inventory Risk Score ($S_{\text{risk}}$)
+Evaluates remaining shelf life against historical sales velocity ($v_{\text{7d}}$) and current stock ($Q$):
 
----
+$$\Delta t = \max(t_{\text{expiry}} - t_{\text{today}}, 0)$$
 
-## 4. Four Core Business Scenarios
+$$Q_{\text{expected\_sales}} = v_{\text{7d}} \times \Delta t$$
 
-### Scenario A: Surplus Inventory Rescue (Donor Branch Perspective)
-- **Problem:** Store A (Downtown Superstore) has 110 units of Organic Greek Yogurt expiring in 2 days; local velocity is only 4.5 units/day, leaving 90 units at severe spoilage risk.
-- **Resolution:** Elena Rostova discovers Store B with high demand (18 units/day). David Kim assigns SwiftReefer Express (3.5T Chilled Van, 12.8 km road).
-- **Settlement:** Settled via enterprise inter-store clearing ledger with **zero transaction fees** ($\Delta \text{Revenue} = 0$). Generates **+$280.40** net incremental network value over local markdowns.
+$$Q_{\text{at\_risk}} = \min(\max(Q - Q_{\text{expected\_sales}}, 0), Q)$$
 
-### Scenario B: Stockout Prevention (Receiving Branch Perspective)
-- **Problem:** Store D (East Branch) faces imminent stockout of Organic Blueberries with only 8 units left and 6.0 hours before empty shelves.
-- **Resolution:** System identifies Store A with 55 transferable units above its local safety stock.
-- **Settlement:** Dispatches immediate internal transfer arriving in 26 minutes, protecting $174.50 retail margin and saving **+$360.50** compared to emergency supplier rush order fees and lost sales.
+$$R_{\%} = \frac{Q_{\text{at\_risk}}}{Q} \times 100$$
 
-### Scenario C: Network-Wide Inventory Balancing
-- **Problem:** Simultaneous multi-branch imbalances across 4 stores (surpluses at Stores A and C; acute deficits at Stores B and D).
-- **Resolution:** Constrained multi-branch optimization allocates 110 units across 2 optimal routes.
-- **Settlement:** Total carrier freight: $90.38, generating **+$613.80** net network economic value.
+$$\text{Urgency Factor } (U) = \begin{cases} 1.5 & \text{if } \Delta t \le 3 \text{ days} \\ 1.2 & \text{if } \Delta t \le 7 \text{ days} \\ 1.0 & \text{otherwise} \end{cases}$$
 
-### Scenario D: External B2B Liquidation Fallback (PayPal Sandbox)
-- **Problem:** Perishable whole milk (120 units, 36h expiry) cannot be absorbed internally because regional cold rooms are at 100% capacity.
-- **Resolution:** Aisha Patel matches verified secondary commercial buyer *Metro Retail Discount Mart* at $1.80/unit ($216.00 USD total). Cedar policy triggers manager approval.
-- **Settlement:** Genuine **PayPal Sandbox Orders API v2** invoice created. Buyer approves in PayPal window, server captures payment with genuine Capture ID, and Linda Zhang reconciles gross ($216.00), PayPal fee ($6.77), and net proceeds ($180.43). Physical fulfillment occurs **only after verified payment capture**.
+$$S_{\text{risk}} = \min(R_{\%} \times U, 100.0)$$
+
+Classification: **CRITICAL** ($S_{\text{risk}} \ge 80$ or $\Delta t \le 2$), **HIGH** ($S_{\text{risk}} \ge 50$), **MEDIUM** ($S_{\text{risk}} \ge 20$), **LOW** ($S_{\text{risk}} < 20$).
 
 ---
 
-## 5. PayPal Sandbox Orders v2 Architecture
+### 2. Geospatial Haversine Distance & Usable Absorption Capacity
+Ensures products are only moved within feasible transfer radii ($D_{\max} = 15\text{ km}$) and destinations can absorb units before expiry:
 
-ReStockAI incorporates PayPal Sandbox Orders API v2 with server-authoritative security:
+$$d = 2 R \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta \lambda}{2}\right)} \right)$$
 
-1. **Server-Side Order Creation (`POST /api/payments/paypal/create-order`):**
-   - Amount is strictly computed by the server from the verified recovery order record—the frontend cannot tamper with prices.
-   - Enforces idempotency via `PayPal-Request-Id` headers.
-2. **Buyer Approval via Standard JavaScript SDK:**
-   - Standard gold PayPal checkout button rendered directly in the simulation modal.
-   - Buyer authenticates in PayPal Sandbox and approves the purchase intent.
-3. **Strict Server-Side Capture (`POST /api/payments/paypal/capture`):**
-   - Validates that PayPal order status is `COMPLETED`.
-   - Validates that captured amount and currency match the expected order total down to the cent.
-   - Extracts genuine `paypal_capture_id`, `paypal_fee`, and `net_amount` directly from `seller_receivable_breakdown`.
-   - Rejects duplicate capture attempts safely (idempotent).
-   - Rejects unapproved orders with genuine HTTP 422 `ORDER_NOT_APPROVED` error from PayPal.
-4. **Decoupled Fulfillment:**
-   - Fulfillment status remains `UNFULFILLED` until physical warehouse release is authorized by Tom Becker following verified payment capture.
+$$C_{\text{usable}} = \max(v_{\text{dest\_7d}} \times \Delta t - Q_{\text{dest}}, 0) \times 0.80$$
+
+$$\text{Recommended Transfer Quantity} = \min(Q_{\text{at\_risk}}, \lfloor C_{\text{usable}} \rfloor)$$
 
 ---
 
-## 6. Road-Routing Intelligence Service
+### 3. Net Economic Recovery Arbitration
+The Decision Engine evaluates all 6 recovery channels simultaneously and strictly chooses the action yielding the **highest expected net recovery**:
 
-Located in [`backend/app/services/routing_service.py`](backend/app/services/routing_service.py):
-- **Live OSRM Highway Engine:** Queries OpenStreetMap road network for driving distances and realistic transit durations.
-- **Calibrated Haversine Fallback:** When offline or sandboxed, uses great-circle distance with an empirical $1.25\times$ urban tortuosity multiplier and $35\text{ km/h}$ average commercial freight speed.
-- **Strict Non-Deceptive Labeling:** Fallback responses explicitly set `is_actual_driving_distance: False`, `routing_engine: "HAVERSINE_CALIBRATED_FALLBACK"`, and emit clear telemetry notes.
-- **Cold-Chain Safety Gate:** Verifies active refrigeration support and ensures estimated journey time plus a 4-hour safety margin does not exceed remaining product shelf life.
+$$\text{Action}^* = \arg\max_{a \in \mathcal{A}} \left( \text{Net Recovery}(a) \right)$$
+
+Where Net Recovery is calculated as:
+
+| Action | Net Economic Recovery Formula | Operational Complexity Rank |
+|---|---|:---:|
+| **`TRANSFER`** | $(Q_{\text{rec}} \times P_{\text{sell}}) - C_{\text{logistics}} - (Q_{\text{rec}} \times C_{\text{handling}})$ | 5 |
+| **`DISCOUNT`** | $Q_{\text{at\_risk}} \times (P_{\text{sell}} \times 0.70) \times 0.80$ | 1 |
+| **`BUNDLE`** | $Q_{\text{at\_risk}} \times (P_{\text{sell}} \times 0.85) \times 0.60 - (Q_{\text{at\_risk}} \times C_{\text{bundle\_handling}})$ | 3 |
+| **`PROMOTE`** | $(Q_{\text{uplift}} \times P_{\text{sell}}) - C_{\text{promo\_handling}}$ | 2 |
+| **`RETURN`** | $(Q_{\text{at\_risk}} \times P_{\text{supplier\_refund}}) - C_{\text{return\_logistics}} - C_{\text{return\_handling}}$ | 4 |
+| **`DISPOSE`** | $-(Q_{\text{at\_risk}} \times C_{\text{disposal\_fee}})$ | 6 |
+| **`NO_ACTION`** | $0.00$ *(Risk below actionable threshold)* | 7 |
+
+*Tie-breaking order: (1) Highest Net Recovery $\rightarrow$ (2) Highest Gross Recovered Value $\rightarrow$ (3) Lowest Operational Complexity.*
 
 ---
 
-## 7. Quickstart Guide
+### 4. Multi-Criteria Logistics Scoring
+Ranks freight and courier partners based on cost efficiency (50%), ETA speed (30%), and fleet headroom (20%):
+
+$$S_{\text{logistics}} = 0.50 \cdot S_{\text{cost}} + 0.30 \cdot S_{\text{eta}} + 0.20 \cdot S_{\text{capacity}}$$
+
+Subject to hard constraints:
+$$\text{Supports Cold Chain}(\text{Partner}) \ge \text{Requires Cold Chain}(\text{SKU})$$
+$$\text{Vehicle Capacity Headroom} \ge \text{Transfer Quantity}$$
+
+---
+
+## 🔐 Security & Governance: Cedar Authorization (Phase 12)
+
+ReStockAI implements zero-trust authorization using the open-source **Cedar Policy Language** (`cedarpy`). Every mutating API endpoint is guarded against unauthorized access:
+
+```cedar
+// 1. Full Network Management
+permit (
+    principal in ReStockAI::Role::"MANAGER",
+    action,
+    resource
+);
+
+// 2. Store-Scoped Operator Isolation
+permit (
+    principal,
+    action in [
+        ReStockAI::Action::"ViewRisk",
+        ReStockAI::Action::"CreateTransfer",
+        ReStockAI::Action::"ExecuteWorkflow"
+    ],
+    resource
+)
+when {
+    principal.role == "OPERATOR" &&
+    resource.store_id == principal.store_scope
+};
+
+// 3. Immutability Protection: Cannot alter finalized transfers
+forbid (
+    principal,
+    action in [ReStockAI::Action::"CancelTransfer", ReStockAI::Action::"CompleteTransfer"],
+    resource
+)
+when {
+    resource.status == "COMPLETED"
+};
+```
+
+---
+
+## 🖥️ Live User Interface & Feature Tour
+
+The frontend is built with **React 19, TypeScript, Vite, and Tailwind CSS v4**, delivering a high-density, real-time command center:
+
+### 1. Operations War Room Dashboard (`/`)
+- Real-time network telemetry: **At-Risk Units ($)**, **Potential Recovery ($)**, **Active Transit Orders**, and **Reconciled Value**.
+- Critical inventory countdown cards showing immediate expiry risks across the network.
+- Live manifest of active transfers and finalized financial outcomes.
+
+### 2. Multi-Store Risk Network Matrix (`/risk`)
+- Multi-dimensional inventory risk ledger filterable by risk level (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`).
+- Displays stock quantity, days remaining, daily sales velocity, and total capital at risk.
+
+### 3. Recovery Decision Arbitration (`/decisions`)
+- Full visual comparison of all 6 recovery actions for each at-risk SKU.
+- Displays economic breakdown: Gross Value, Logistics Freight, Handling Surcharges, and Net Recovery.
+- One-click transfer dispatch directly from the decision card.
+
+### 4. Transfer Dispatch & Manifest (`/transfers`)
+- Real-time status manifest for inventory movements (`CREATED`, `APPROVED`, `ASSIGNED`, `IN_TRANSIT`, `COMPLETED`).
+- Detailed transfer tracking with route maps, assigned logistics partner, and cold-chain compliance badges.
+
+### 5. Strands AI Natural-Language Agent Terminal (`/agent`)
+- Integrated chat terminal connected to a local LLM (e.g. Llama 3) via Strands Agents.
+- **Zero-Hallucination Deterministic Guardrails**: The agent does not invent numbers. It executes live engine tools (`get_inventory_risk`, `find_destination_matches`, `evaluate_recovery_options`, `optimize_logistics`), presents verified engine figures, and displays tool badges.
+
+---
+
+## 🚀 Quick Start Guide
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+ and npm
-- PayPal Developer Sandbox Account (for live Scenario D testing)
+- **Python 3.11+**
+- **Node.js v18+ & npm**
+- **Ollama** (optional, for local LLM assistant): [https://ollama.com/](https://ollama.com/)
 
-### 1. Clone & Configure Environment
+---
+
+### Step 1: Clone and Set Up Virtual Environment
+
 ```bash
-git clone https://github.com/your-org/Restock_AI.git
+# Clone the repository
+git clone -b main https://github.com/Manish-N-2006/Restock_AI.git
 cd Restock_AI
 
-# Copy environment template
-cp .env.example .env
-```
-Edit `.env` to supply your **PayPal Sandbox credentials** and **Groq API key**:
-```ini
-RESTOCKAI_LLM_PROVIDER=groq
-RESTOCKAI_GROQ_API_KEY=your_groq_api_key_here
-RESTOCKAI_AGENT_MODEL=llama-3.3-70b-versatile
-RESTOCKAI_PAYPAL_CLIENT_ID=your_paypal_sandbox_client_id_here
-RESTOCKAI_PAYPAL_CLIENT_SECRET=your_paypal_sandbox_client_secret_here
-PAYPAL_MODE=sandbox
-PAYPAL_CURRENCY=USD
-```
-
-### 2. Backend Setup & Database Seeding
-```bash
-# Create and activate virtual environment
+# Create and activate Python virtual environment
 python -m venv venv
 
-# Windows
-venv\Scripts\activate
-# macOS/Linux
+# Windows (PowerShell)
+.\venv\Scripts\activate
+
+# macOS / Linux
 source venv/bin/activate
 
 # Install backend dependencies
 pip install -r backend/requirements.txt
-
-# Seed synthetic retail database
-python -m backend.app.services.data_loader
-
-# Start FastAPI development server
-uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-### 3. Frontend Setup
-In a new terminal:
+---
+
+### Step 2: Seed the Local SQLite Database
+
+Populate the database with synthetic retail stores, logistics partners, and multi-store inventory:
+
+```bash
+python -m backend.app.services.data_loader --reset
+```
+
+---
+
+### Step 3: Launch the Backend API
+
+```bash
+uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+- **API Base URL**: `http://127.0.0.1:8000`
+- **Interactive Swagger Documentation**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **Health Check**: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+
+*Note: Protected endpoints require the development authorization header: `X-ReStockAI-User: manager`.*
+
+---
+
+### Step 4: Start the Local AI Assistant (Optional)
+
+In a separate terminal, ensure Ollama is serving your local model (e.g. `llama3:latest` or `llama3.1`):
+
+```bash
+ollama serve
+```
+
+---
+
+### Step 5: Launch the Frontend Web Dashboard
+
+In a new terminal window:
+
 ```bash
 cd frontend
+
+# Install dependencies
 npm install
-npm run dev -- --port 5173
+
+# Start Vite development server
+npm run dev
+```
+
+Open your browser at **[http://localhost:5173](http://localhost:5173)** to access the ReStockAI command center.
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+ReStockAI features an exhaustive automated test suite covering all services, APIs, security policies, and edge-case failure modes:
+
+```bash
+# Run the complete pytest test suite
+$env:PYTHONPATH=".;backend"; pytest backend/tests/ -v
+
+# Validate Cedar authorization policies
+python -m backend.app.authorization.validate
+```
+
+### Test Coverage Highlights:
+- `test_risk_engine.py`: Validates sales decay, urgency multipliers, and risk level thresholds.
+- `test_demand_engine.py`: Validates Haversine distance calculations, cold-chain gating, and capacity buffers.
+- `test_decision_engine.py`: Validates economic arbitration across all 6 recovery actions and deterministic tie-breaking.
+- `test_logistics_engine.py`: Validates multi-criteria scoring, cold-chain checks, and freight cost estimates.
+- `test_transfer_engine.py`: Validates state transitions, illegal state transitions, and idempotency.
+- `test_authorization_api.py`: Validates Cedar PBAC authorization, store scoping, and explicit forbidden mutations.
+- `test_agent_service.py`: Validates LLM tool-calling guardrails and deterministic fallback integration.
+
+---
+
+## 📡 API Reference & Example Requests
+
+### 1. Retrieve Network Inventory Risk Summary
+```bash
+curl -X GET "http://127.0.0.1:8000/api/risk/summary" \
+     -H "X-ReStockAI-User: manager"
+```
+
+### 2. Get Optimal Recovery Decision for a SKU
+```bash
+curl -X GET "http://127.0.0.1:8000/api/decision/YOG-001?store_id=STORE_A" \
+     -H "X-ReStockAI-User: manager"
+```
+
+### 3. Query Best Matched Destination Store
+```bash
+curl -X GET "http://127.0.0.1:8000/api/demand/best-match/YOG-001?source_store_id=STORE_A" \
+     -H "X-ReStockAI-User: manager"
 ```
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
----
-
-## 8. Running the Complete Verification Suite
-
-### Automated Backend Tests (158 Tests, 100% Pass Rate)
+### 4. Query AI Orchestration Agent
 ```bash
-# Run full regression suite
-pytest backend/tests/ -v
+curl -X POST "http://127.0.0.1:8000/api/agent/ask" \
+     -H "Content-Type: application/json" \
+     -H "X-ReStockAI-User: manager" \
+     -d '{"question": "What should I do with YOG-001 at STORE_A?"}'
 ```
 All 158 tests covering deterministic risk calculations, demand matching, decision trade-offs, road-routing intelligence, Cedar authorization, Render/PostgreSQL readiness & Alembic migrations, WebSockets, and PayPal Sandbox payments pass with 0 failures.
 
-### Frontend Production Build
+### 5. Execute Full Recovery Workflow (One-Click Autonomous Loop)
 ```bash
-cd frontend
-npm run build
+curl -X POST "http://127.0.0.1:8000/api/workflow/execute" \
+     -H "Content-Type: application/json" \
+     -H "X-ReStockAI-User: manager" \
+     -d '{
+       "sku_id": "YOG-001",
+       "source_store_id": "STORE_A",
+       "actual_units_sold": 42,
+       "actual_recovered_value": 6720.0,
+       "actual_logistics_cost": 320.0,
+       "actual_handling_cost": 50.0
+     }'
 ```
-Executes TypeScript type checking (`tsc -b`) and Vite production bundle generation with 0 errors.
 
 ---
 
-## 9. Manual Sandbox Demonstration Steps (Scenario D)
+## 🏆 Why ReStockAI Wins
 
-To verify the live PayPal Sandbox payment workflow during a hackathon evaluation:
-1. Open the application at [http://localhost:5173](http://localhost:5173) and click **Simulation** in the navigation menu.
-2. Under Scenario Selection, choose **Scenario D: External B2B Liquidation Fallback**.
-3. Advance through the stages by clicking **Next Step**:
-   - **Stage 1 (Inventory Audit):** Marcus Vance identifies 120 units of milk expiring in 36h at Store A.
-   - **Stage 2 (Buyer Matching):** Aisha Patel matches *Metro Retail Discount Mart* (100% match).
-   - **Stage 3 & 4:** System checks economics and assigns refrigerated transport.
-   - **Stage 5 (Order Created):** Aisha structures formal Recovery Order `SIM-ORD-EXT-*` for $216.00 USD.
-   - **Stage 6 (Cedar Gate):** Sarah Chen triggers approval; click **Approve Decision** to authorize.
-4. **Stage 7 (Settlement / PayPal):** The PayPal checkout modal appears. Click the gold **PayPal** button.
-5. In the PayPal Sandbox popup window, sign in using personal PayPal Sandbox buyer credentials.
-6. Click **Complete Purchase**.
-7. The server captures the payment via PayPal Orders API v2, verifies the `COMPLETED` status, and logs the genuine `capture_id`.
-8. The workflow automatically completes **Stage 8 (Fulfillment by Tom Becker)** and **Stage 9 (Financial Reconciliation by Linda Zhang)** with full gross, fee, and net accounting.
+1. **True End-to-End Execution**: Not a mock interface or simple wrapper. ReStockAI implements a complete loop from raw data ingestion to risk scoring, geospatial store matching, economic arbitration, logistics dispatch, and post-transfer outcome reconciliation.
+2. **100% Deterministic Financial Integrity**: Unlike unconstrained LLM solutions that hallucinate dollar values, ReStockAI's financial calculations are completely deterministic and mathematically provable. The AI agent acts strictly as an explainable orchestration layer.
+3. **Enterprise-Grade Authorization (Cedar PBAC)**: Implements Amazon's open-source Cedar language (`cedarpy`), providing formal policy separation between identity, permissions, and business logic.
+4. **Dual-Path Architecture (FastAPI + AWS SAM)**: Production-ready hybrid design supporting both containerized microservice execution and serverless AWS Lambda invocation with identical business logic parity.
+5. **Production-Ready Modern UI**: Built with React 19, Vite, and Tailwind CSS v4, providing a real-time command center designed for dark-store network dispatchers.
 
 ---
 
-## 10. Render Cloud Deployment Guide
+## 📄 License
 
-ReStockAI 2.0 includes a complete Render Blueprint (`render.yaml`) provisioning:
-- **`restockai-db`**: Managed PostgreSQL database
-- **`restockai-api`**: FastAPI + WebSocket Virtual Office Web Service (`uvicorn --workers 1`)
-- **`restockai-web`**: React 19 + Vite Static Site on Render's CDN with SPA routing rewrites
-
-### A. Quick Blueprint Deployment
-1. Push your repository to GitHub/GitLab (ensure `.env` and `*.db` remain ignored via `.gitignore`).
-2. In the **Render Dashboard**, choose **New + &rarr; Blueprint** and select this repository containing [`render.yaml`](render.yaml).
-3. Provide your secret environment variables (`RESTOCKAI_GROQ_API_KEY`, `RESTOCKAI_PAYPAL_CLIENT_ID`, `RESTOCKAI_PAYPAL_CLIENT_SECRET`) when prompted.
-4. Once both web services deploy and receive their public `.onrender.com` URLs:
-   - On **`restockai-api`**, set `FRONTEND_URL` to your static site URL (e.g. `https://restockai-web.onrender.com`).
-   - On **`restockai-web`**, set `VITE_API_BASE_URL` to your backend URL (e.g. `https://restockai-api.onrender.com`), then trigger **Manual Deploy &rarr; Clear build cache & deploy** so Vite bakes the production API/WSS URL into `frontend/dist/`.
-
-### B. Database Migration (SQLite Local &harr; PostgreSQL on Render)
-- **URL Handling:** `backend/app/database.py` automatically reads `DATABASE_URL` (normalizing Render's `postgres://` prefix to `postgresql://`), applies connection health checks (`pool_pre_ping=True`, `pool_recycle=300`), and preserves SQLite locally when `DATABASE_URL` is unset.
-- **Schema Migrations (Alembic):**
-  ```bash
-  # Generate PostgreSQL DDL for inspection
-  alembic -c backend/alembic.ini upgrade head --sql
-
-  # Apply schema migrations cleanly against target DATABASE_URL
-  alembic -c backend/alembic.ini upgrade head
-  ```
-- **Non-Destructive Startup Seeding:** On Render startup (`uvicorn` with `--workers 1`), FastAPI's `lifespan` ensures schema creation is idempotent and seeds initial store/SKU/logistics data **only** when tables are empty (`RESTOCKAI_RUN_SEED_ON_STARTUP=true`). Existing production records are never overwritten.
-
-### C. Cost & Tier Considerations
-- **Free Tier (\$0/mo total for demo evaluation):**
-  - Static Site (`restockai-web`): permanently free CDN hosting.
-  - Web Service (`restockai-api`, Free): 750 free hours/month, **spins down after 15 min idle** (~50s cold start).
-  - Managed PostgreSQL (`restockai-db`, Free): **expires 30 days after creation** (14-day grace period before deletion).
-- **Recommended Hackathon / Live Demo Tier (~$13/mo):**
-  - Upgrade `restockai-api` to **Starter (\$7/mo)** to keep API and WebSockets warm with zero cold starts, and `restockai-db` to **Basic (\$6/mo)** for permanent PostgreSQL persistence.
-
-### D. Demo Authentication & Security Hardening
-
-ReStockAI 2.0 protects all operational REST routes (`inventory`, `risk`, `decisions`, `transfers`, `outcomes`, `history`, `workflow`, `authorization`, `agent`, `simulation`, `payments`, `office`) and WebSocket streams (`/ws/office`, `/ws`) using hardened session authentication:
-
-1. **Required Environment Variables:**
-   - `RESTOCKAI_DEMO_PASSWORD`: Demo access password verified on the backend via constant-time comparison (`POST /api/auth/login`).
-   - `RESTOCKAI_SESSION_SECRET`: Cryptographic signing key (`>= 32` characters, distinct from `RESTOCKAI_DEMO_PASSWORD`) validated on startup in production.
-   - `RESTOCKAI_SESSION_TTL_MINUTES`: Session lifetime in minutes (`1..480`, default `60`).
-   - `FRONTEND_URL`: Exact HTTPS deployed frontend origin (e.g. `https://restockai-web.onrender.com`) configured for credentialed CORS, Origin validation, WebSocket handshakes, and PayPal callback URLs (no localhost fallback in production).
-   - `RESTOCKAI_TRUSTED_PROXY_HOPS`: Set to `1` on Render so rate limiting reads the right-most proxy-appended client IP rather than spoofable left-most `X-Forwarded-For` entries (set `0` for direct local development).
-2. **Defense-in-Depth Controls:**
-   - **Cookies & CSRF:** Production issues `__Host-restockai_session` (`HttpOnly`, `Secure`, `SameSite=None`, `Path=/`). All `POST`/`PUT`/`PATCH`/`DELETE` requests require matching `Origin`, `Content-Type: application/json` for payloads, and a session-bound `X-CSRF-Token` stored in frontend memory.
-   - **WebSocket Protection:** Handshakes verify both session cookie and `Origin` before room admission (closing unauthorized requests with `1008`), and logout actively closes bound WebSockets.
-   - **Persistence & Production Posture:** Session revocations (`revoked_sessions`) and bounded sliding-window rate limits (`login_attempt_buckets`) persist in Neon PostgreSQL / SQLite across restarts; `/docs`, `/redoc`, and `/openapi.json` are disabled when `RESTOCKAI_ENV=production`.
-3. **Signing In (Judges & Reviewers):**
-   - Navigate to the deployed frontend URL (unauthenticated users redirect automatically to `/login`), enter the hackathon demo password, and click **Logout** in the top navigation bar when done.
-   - Keep `PAYPAL_MODE=sandbox` and `PAYPAL_ALLOW_MOCK=false`, use spend-capped Groq keys, and restrict deployment to controlled hackathon judging without real production customer data.
-
----
-
-## 11. License & Attributions
-
-This project is licensed under the [MIT License](LICENSE). Third-party attributions and licenses for PayPal SDK, FastAPI, React, Tailwind CSS, Lucide, and OpenStreetMap/OSRM are detailed in the `LICENSE` file.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

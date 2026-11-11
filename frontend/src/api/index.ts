@@ -1,9 +1,12 @@
 import { fetchApi } from './client';
-import { RiskItem, Decision, WorkflowResult, Transfer, HistoricalRecord, AgentResponse } from '../types';
+import { RiskItem, Decision, WorkflowResult, Transfer, Outcome, HistoricalRecord, AgentResponse } from '../types';
 
 export const api = {
   // Risk APIs
-  getRiskItems: () => fetchApi<{items: RiskItem[]}>('/api/risk').then(res => res.items),
+  getRiskItems: async () => {
+    const res = await fetchApi<any>('/api/risk');
+    return (Array.isArray(res) ? res : res.items || []) as RiskItem[];
+  },
   getRiskSummary: () => fetchApi<any>('/api/risk/summary'),
   
   // Decision APIs
