@@ -21,6 +21,21 @@ from ..models.commerce import RecoveryOrder, RecoveryOrderStatus, RecoveryFulfil
 
 logger = logging.getLogger("payments.service")
 
+
+def _safe_paypal_http_status(upstream_status: int) -> int:
+    """
+    Never forward upstream PayPal 401/403 status codes to the frontend because 401 triggers
+    session logout on the ReStockAI API client. Map upstream PayPal auth failures to 502.
+    """
+    if upstream_status in (401, 403):
+        return 502
+    if 400 <= upstream_status < 500:
+        return upstream_status
+    if upstream_status == 503:
+        return 503
+    return 502
+
+
 class PaymentService:
     """
     Core Payment Orchestration Service.
@@ -144,7 +159,10 @@ class PaymentService:
             )
         except PayPalClientError as pce:
             logger.error(f"PayPal create_order error: {pce.message}")
-            raise HTTPException(status_code=pce.status_code, detail=f"PayPal API error: {pce.message}")
+            raise HTTPException(
+                status_code=_safe_paypal_http_status(pce.status_code),
+                detail=f"PayPal API error: {pce.message}",
+            )
 
         paypal_order_id = paypal_data.get("id")
         approval_url = None
@@ -278,7 +296,10 @@ class PaymentService:
             sim_txn["status"] = PaymentStatus.FAILED.value
             sim_txn["error_message"] = pce.message
             logger.error(f"PayPal capture failed for {paypal_order_id}: {pce.message}")
-            raise HTTPException(status_code=pce.status_code, detail=f"PayPal Capture failed: {pce.message}")
+            raise HTTPException(
+                status_code=_safe_paypal_http_status(pce.status_code),
+                detail=f"PayPal Capture failed: {pce.message}",
+            )
 
         paypal_status = capture_data.get("status")
         if paypal_status != "COMPLETED":
@@ -446,7 +467,10 @@ class PaymentService:
             transaction.error_message = pce.message
             db.commit()
             logger.error(f"PayPal capture failed for {paypal_order_id}: {pce.message}")
-            raise HTTPException(status_code=pce.status_code, detail=f"PayPal Capture failed: {pce.message}")
+            raise HTTPException(
+                status_code=_safe_paypal_http_status(pce.status_code),
+                detail=f"PayPal Capture failed: {pce.message}",
+            )
 
         # 5. Strict Response Validation
         paypal_status = capture_data.get("status")

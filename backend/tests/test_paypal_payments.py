@@ -264,3 +264,20 @@ async def test_agent_workforce_commerce_and_finance_reconciliation():
         db.query(RecoveryOrder).filter(RecoveryOrder.order_id == com_result.order_id).delete()
         db.commit()
 
+
+def test_upstream_paypal_401_mapped_to_502_not_session_logout(test_order):
+    """Upstream PayPal OAuth 401 failures must return 502 so the frontend session stays logged in."""
+    from unittest.mock import patch
+    from app.payments.paypal_client import PayPalClientError
+
+    with patch(
+        "app.payments.service.paypal_client.create_order",
+        side_effect=PayPalClientError("PayPal OAuth authentication failed", status_code=401),
+    ):
+        res = client.post("/api/payments/paypal/create-order", json={"recovery_order_id": test_order})
+        assert res.status_code == 502
+        assert "PayPal API error" in res.json()["detail"]
+
+    # Authenticated session cookie remains valid
+    assert client.get("/api/auth/session").status_code == 200
+
