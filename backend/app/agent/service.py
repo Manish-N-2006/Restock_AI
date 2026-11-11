@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Any, List
 import json
 from .agent import create_restock_agent
@@ -7,26 +8,35 @@ def ask_restock_agent(question: str) -> Dict[str, Any]:
         agent = create_restock_agent()
         result = agent(question)
         
-        # Extract the tools used from the result (if available in metrics or state)
-        # Note: Strands AgentResult might contain trace info, but for simplicity
-        # we'll extract just the final text response.
         answer_text = "No response generated."
-        if result and result.message:
-            for content_block in result.message.content:
-                if hasattr(content_block, 'text'):
-                    answer_text = content_block.text
+        if result and hasattr(result, "message") and result.message:
+            msg = result.message
+            content = getattr(msg, "content", None) or (msg.get("content") if isinstance(msg, dict) else [])
+            for block in content:
+                if isinstance(block, dict):
+                    if "text" in block and block["text"]:
+                        answer_text = block["text"]
+                        break
+                elif hasattr(block, "text") and block.text:
+                    answer_text = block.text
                     break
+            if answer_text == "No response generated." and hasattr(result, "text"):
+                answer_text = str(result.text)
 
         return {
             "question": question,
             "answer": answer_text,
-            "tools_used": [] # Extracting actual tool traces depends on detailed Strands trace inspection, omitted here for simplicity
+            "tools_used": []
         }
     except Exception as e:
-        # Fallback for model unavailable
+        provider = os.getenv("RESTOCKAI_LLM_PROVIDER", "groq").lower()
+        if provider == "ollama" or "ollama" in str(e).lower():
+            msg = "The local ReStockAI agent is unavailable because the configured Ollama model cannot be reached or encountered an error."
+        else:
+            msg = f"The ReStockAI agent ({provider.upper()}) encountered an error: {str(e)}"
         return {
             "question": question,
-            "answer": "The local ReStockAI agent is unavailable because the configured Ollama model cannot be reached or encountered an error.",
+            "answer": msg,
             "error_detail": str(e),
             "tools_used": []
         }

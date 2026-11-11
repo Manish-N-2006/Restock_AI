@@ -192,7 +192,7 @@ def run_complete_recovery_workflow(
                 refreshed_transfer = db.query(TransferOrder).filter(TransferOrder.transfer_id == transfer_id).first()
                 from ..models.outcome import Outcome
                 refreshed_outcome = db.query(Outcome).filter(Outcome.outcome_id == outcome.outcome_id).first()
-                history_indexed = upsert_outcome_history(refreshed_outcome, refreshed_transfer)
+                history_indexed = bool(upsert_outcome_history(refreshed_outcome, refreshed_transfer))
                 if history_indexed:
                     logger.info("history_indexed")
         except Exception as e:

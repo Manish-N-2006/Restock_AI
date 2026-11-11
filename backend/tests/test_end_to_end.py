@@ -3,18 +3,33 @@ from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
 from app.main import app
 
+from app.auth.service import reset_auth_runtime_state
+
 client = TestClient(app)
 
-from app.authorization.principal import get_current_principal
-app.dependency_overrides[get_current_principal] = lambda: {
-    "uid": {"type": "ReStockAI::User", "id": "manager-test"},
-    "attrs": {"role": "MANAGER", "store_scope": "*"},
-    "parents": []
-}
+
+@pytest.fixture(autouse=True, scope="module")
+def authenticated_session():
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setenv("RESTOCKAI_DEMO_PASSWORD", "test-suite-pass")
+        mp.setenv("RESTOCKAI_SESSION_SECRET", "test-suite-secret-0123456789abcdef")
+        reset_auth_runtime_state()
+        saved = dict(app.dependency_overrides)
+        app.dependency_overrides.clear()
+        res = client.post("/api/auth/login", json={"password": "test-suite-pass"})
+        assert res.status_code == 200
+        client.headers.update({"X-CSRF-Token": res.json()["csrf_token"]})
+        try:
+            yield
+        finally:
+            app.dependency_overrides.clear()
+            app.dependency_overrides.update(saved)
+            reset_auth_runtime_state()
 
 
 @patch('app.services.orchestration_engine.upsert_outcome_history')
 def test_end_to_end_full_recovery_workflow_success(mock_upsert):
+    mock_upsert.return_value = True
     # Execute full workflow for YOG-001 at STORE_A
     req_data = {
         "sku_id": "YOG-001",

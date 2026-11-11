@@ -1,5 +1,5 @@
 import { fetchApi } from './client';
-import { RiskItem, Decision, LogisticsRecommendation, WorkflowResult, Transfer, Outcome, HistoricalRecord, AgentResponse } from '../types';
+import { RiskItem, Decision, WorkflowResult, Transfer, HistoricalRecord, AgentResponse } from '../types';
 
 export const api = {
   // Risk APIs

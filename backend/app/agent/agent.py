@@ -1,6 +1,6 @@
 import os
 from strands import Agent
-from strands.models.ollama import OllamaModel
+from .llm import get_llm_model
 
 from .prompts import SYSTEM_PROMPT
 from .tools import (
@@ -14,21 +14,7 @@ from .tools import (
 )
 
 def create_restock_agent() -> Agent:
-    host = os.getenv("RESTOCKAI_OLLAMA_HOST", "http://localhost:11434")
-    model_name = os.getenv("RESTOCKAI_AGENT_MODEL", "llama3.1")
-    temperature_str = os.getenv("RESTOCKAI_AGENT_TEMPERATURE", "0.2")
-    
-    try:
-        temperature = float(temperature_str)
-    except ValueError:
-        temperature = 0.2
-
-    # Configure the Ollama model instance
-    model = OllamaModel(
-        model_name=model_name,
-        endpoint=host,
-        temperature=temperature
-    )
+    model = get_llm_model()
 
     agent = Agent(
         model=model,

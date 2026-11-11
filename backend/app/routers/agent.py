@@ -55,3 +55,19 @@ def api_agent_health():
         ollama_host=host,
         model_name=model_name
     )
+
+
+@router.get("/provider-health")
+def api_agent_provider_health():
+    """Report readiness of the configured LLM provider (Groq or Ollama) for cloud monitoring."""
+    provider = os.getenv("RESTOCKAI_LLM_PROVIDER", "groq").strip().lower()
+    model_name = os.getenv("RESTOCKAI_AGENT_MODEL", "openai/gpt-oss-120b")
+    if provider == "groq":
+        api_key = os.getenv("RESTOCKAI_GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
+        return {
+            "model_provider": "groq",
+            "configured": bool(api_key),
+            "available": bool(api_key),
+            "model_name": model_name,
+        }
+    return api_agent_health()

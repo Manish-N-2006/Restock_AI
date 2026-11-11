@@ -1,5 +1,5 @@
 import React from 'react';
-import { IntegratedRecommendationResponse, EvaluatedAction } from '../../types';
+import { IntegratedRecommendationResponse } from '../../types';
 import { X, CheckCircle2, TrendingUp, AlertTriangle, Truck } from 'lucide-react';
 
 interface RecoveryDecisionModalProps {

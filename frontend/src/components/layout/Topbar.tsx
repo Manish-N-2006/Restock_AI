@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Clock } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { Activity, Clock, LogOut, ShieldCheck } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 export const Topbar: React.FC = () => {
   const [time, setTime] = useState<Date>(new Date());
   const location = useLocation();
+  const navigate = useNavigate();
+  const { session, logout } = useAuth();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -52,6 +55,27 @@ export const Topbar: React.FC = () => {
           <span>{dateString}</span>
           <span className="text-text-muted">|</span>
           <span className="text-text-primary">{timeString}</span>
+        </div>
+
+        <div className="flex items-center space-x-2 pl-2 border-l border-border">
+          {session && (
+            <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider">
+              <ShieldCheck className="h-3 w-3" />
+              {session.role}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={async () => {
+              await logout();
+              navigate('/login', { replace: true });
+            }}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+            title="Sign out of demo session"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
     </header>
