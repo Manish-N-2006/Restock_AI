@@ -109,6 +109,12 @@ export const LoginPage: React.FC = () => {
             {submitting ? 'Verifying Session...' : 'Sign In to Operations Console'}
             {!submitting && <ArrowRight className="w-4 h-4" />}
           </button>
+          <p className="text-center text-xs text-slate-500 pt-1">
+            Demo password is{' '}
+            <code className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 font-mono font-semibold text-slate-700 select-all">
+              demo
+            </code>
+          </p>
         </form>
       </div>
     </div>
