@@ -1,7 +1,7 @@
 import os
 import requests
 from strands import Agent
-from strands.models.ollama import OllamaModel
+from .llm import get_llm_model
 
 from .prompts import SYSTEM_PROMPT
 from .tools import (

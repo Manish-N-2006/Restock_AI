@@ -1,3 +1,5 @@
+from typing import Any
+
 def build_user_entity(user_id: str, role: str, store_scope: str) -> dict:
     """Builds a Cedar User entity"""
     return {
@@ -12,8 +14,9 @@ def build_user_entity(user_id: str, role: str, store_scope: str) -> dict:
         "parents": []
     }
 
-def build_transfer_entity(transfer_id: str, source_store_id: str, status: str) -> dict:
+def build_transfer_entity(transfer_id: str, source_store_id: str, status: Any) -> dict:
     """Builds a Cedar Transfer entity"""
+    status_str = status.value if hasattr(status, "value") else str(status)
     return {
         "uid": {
             "type": "ReStockAI::Transfer",
@@ -21,7 +24,7 @@ def build_transfer_entity(transfer_id: str, source_store_id: str, status: str) -
         },
         "attrs": {
             "source_store_id": source_store_id,
-            "status": status
+            "status": status_str
         },
         "parents": []
     }

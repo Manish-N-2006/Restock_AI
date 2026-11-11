@@ -1,0 +1,102 @@
+# ==============================================================================
+# ReStockAI 2.0 — Render Blueprint Specification
+# ==============================================================================
+# Provisions:
+#   1. restockai-api  (FastAPI Web Service + WebSocket Virtual Office)
+#   2. restockai-web  (React 19 + Vite Static Site CDN with SPA Rewrite)
+#   *  Database       (External Neon Free PostgreSQL via DATABASE_URL)
+#
+# Important Operational Notes:
+#   - Backend must run with `--workers 1` so in-memory SimulationOrchestrator
+#     runs and WebSocket office rooms remain consistent across requests.
+#   - Replace `sync: false` secrets (including Neon DATABASE_URL) in the Render Dashboard after importing.
+#   - Never commit real credentials or API keys to this repository.
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Backend API & WebSocket Service (FastAPI + Python 3.11)
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: restockai-api
+    runtime: python
+    # Free tier sleeps after 15m inactivity (~50s cold start).
+    # Recommended for live hackathon judging: 'starter' ($7/mo) for always-on WSS & API.
+    plan: free
+    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
+    startCommand: alembic -c backend/alembic.ini upgrade head && uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: RESTOCKAI_ENV
+        value: "production"
+      - key: DATABASE_URL
+        sync: false
+      - key: RESTOCKAI_RUN_SEED_ON_STARTUP
+        value: "true"
+
+      # Strands Multi-Agent Workforce & Groq LLM
+      - key: RESTOCKAI_LLM_PROVIDER
+        value: "groq"
+      - key: RESTOCKAI_AGENT_MODEL
+        value: "openai/gpt-oss-120b"
+      - key: RESTOCKAI_AGENT_TEMPERATURE
+        value: "0.2"
+      - key: RESTOCKAI_GROQ_API_KEY
+        sync: false
+
+      # PayPal Orders API v2 Sandbox Credentials
+      - key: RESTOCKAI_PAYPAL_CLIENT_ID
+        sync: false
+      - key: RESTOCKAI_PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_MODE
+        value: "sandbox"
+      - key: PAYPAL_CURRENCY
+        value: "USD"
+      - key: PAYPAL_ALLOW_MOCK
+        value: "false"
+
+      # OpenSearch Fallback (PostgreSQL SQL fallback active when no OpenSearch cluster)
+      - key: RESTOCKAI_OPENSEARCH_FALLBACK
+        value: "true"
+
+      # Routing Service (OSRM Road API + calibrated Haversine fallback)
+      - key: RESTOCKAI_OSRM_URL
+        value: "https://router.project-osrm.org"
+
+      # Demo Session Authentication & Credentialed CORS (exact FRONTEND_URL, no wildcard)
+      - key: RESTOCKAI_DEMO_PASSWORD
+        sync: false
+      - key: RESTOCKAI_SESSION_SECRET
+        sync: false
+      - key: RESTOCKAI_SESSION_TTL_MINUTES
+        value: "60"
+      # Render terminates TLS at 1 managed reverse proxy hop appending the real IP to X-Forwarded-For
+      - key: RESTOCKAI_TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: FRONTEND_URL
+        sync: false
+
+  # ----------------------------------------------------------------------------
+  # 2. Frontend Static Site (React 19 + Vite + TypeScript)
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: restockai-web
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # Set to your deployed Render backend URL (e.g. https://restockai-api.onrender.com),
+      # then trigger a manual redeploy of this static site so Vite bakes it into dist/.
+      # VITE_WS_URL is automatically derived as wss://<backend-host>/ws/office.
+      - key: VITE_API_BASE_URL
+        sync: false
+

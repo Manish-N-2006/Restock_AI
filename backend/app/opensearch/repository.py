@@ -60,6 +60,100 @@ def get_history_by_transfer_id(transfer_id: str) -> Optional[Dict[str, Any]]:
         logger.warning(f"History document not found for {transfer_id}: {str(e)}")
         return None
 
+def _is_sql_fallback_enabled() -> bool:
+    import os
+    return os.getenv("RESTOCKAI_OPENSEARCH_FALLBACK", "false").strip().lower() in ("true", "1", "yes")
+
+
+def _sql_search_history(
+    q: Optional[str] = None,
+    sku_id: Optional[str] = None,
+    source_store_id: Optional[str] = None,
+    destination_store_id: Optional[str] = None,
+    outcome_status: Optional[str] = None,
+    limit: int = 10,
+) -> Dict[str, Any]:
+    from sqlalchemy import or_
+    from ..database import SessionLocal
+    from ..models.transfer import TransferOrder
+    from ..models.outcome import Outcome, OutcomeStatus
+
+    with SessionLocal() as db:
+        query = db.query(TransferOrder).join(Outcome, TransferOrder.transfer_id == Outcome.transfer_id)
+
+        if q:
+            search_term = f"%{q}%"
+            query = query.filter(
+                or_(
+                    TransferOrder.sku_id.ilike(search_term),
+                    TransferOrder.product_name.ilike(search_term),
+                    TransferOrder.source_store_id.ilike(search_term),
+                    TransferOrder.destination_store_id.ilike(search_term),
+                )
+            )
+
+        if sku_id:
+            query = query.filter(TransferOrder.sku_id == sku_id)
+        if source_store_id:
+            query = query.filter(TransferOrder.source_store_id == source_store_id)
+        if destination_store_id:
+            query = query.filter(TransferOrder.destination_store_id == destination_store_id)
+        if outcome_status:
+            try:
+                status_enum = OutcomeStatus(outcome_status.upper())
+                query = query.filter(Outcome.outcome_status == status_enum)
+            except ValueError:
+                return {"total": 0, "results": []}
+
+        results = query.order_by(TransferOrder.created_at.desc()).limit(limit).all()
+
+        mapped_results = []
+        for t in results:
+            o = db.query(Outcome).filter(Outcome.transfer_id == t.transfer_id).first()
+            mapped_results.append({
+                "transfer_id": t.transfer_id,
+                "sku_id": t.sku_id,
+                "source_store_id": t.source_store_id,
+                "destination_store_id": t.destination_store_id,
+                "decision": {"action": "TRANSFER"},
+                "outcome": {
+                    "actual_net_recovery": o.actual_net_recovery if o else 0,
+                    "recovery_accuracy_percentage": o.recovery_accuracy_percentage if o else 0,
+                    "actual_units_sold": o.actual_units_sold if o else 0,
+                    "outcome_status": o.outcome_status.value if o else "PENDING",
+                },
+            })
+
+        return {"total": len(mapped_results), "results": mapped_results}
+
+
+def _sql_history_summary() -> Dict[str, Any]:
+    from sqlalchemy import func
+    from ..database import SessionLocal
+    from ..models.transfer import TransferOrder, TransferStatus
+    from ..models.outcome import Outcome, OutcomeStatus
+
+    with SessionLocal() as db:
+        total_indexed = db.query(TransferOrder).filter(TransferOrder.status == TransferStatus.COMPLETED).count()
+        total_finalized = db.query(Outcome).filter(Outcome.outcome_status == OutcomeStatus.FINALIZED).count()
+        total_units = db.query(func.sum(TransferOrder.quantity)).filter(TransferOrder.status == TransferStatus.COMPLETED).scalar() or 0
+
+        net_recovery = db.query(func.sum(Outcome.actual_net_recovery)).filter(Outcome.outcome_status == OutcomeStatus.FINALIZED).scalar() or 0
+        avg_accuracy = db.query(func.avg(Outcome.recovery_accuracy_percentage)).filter(Outcome.outcome_status == OutcomeStatus.FINALIZED).scalar()
+        avg_sell = db.query(func.avg(Outcome.sell_through_rate)).filter(Outcome.outcome_status == OutcomeStatus.FINALIZED).scalar()
+
+        return {
+            "total_indexed_transfers": total_indexed,
+            "total_finalized_outcomes": total_finalized,
+            "total_units_moved": total_units,
+            "total_actual_net_recovery": net_recovery,
+            "average_recovery_accuracy": avg_accuracy,
+            "average_sell_through_rate": avg_sell,
+            "transfer_count_by_action": {"TRANSFER": total_indexed},
+            "transfer_count_by_partner": {"SQL Fallback": total_indexed},
+        }
+
+
 def search_history(
     q: Optional[str] = None,
     sku_id: Optional[str] = None,
@@ -72,7 +166,9 @@ def search_history(
 ) -> Dict[str, Any]:
     client = get_opensearch_client()
     if not client:
-        return {"total": 0, "results": [], "error": "OpenSearch is unavailable"}
+        if not _is_sql_fallback_enabled():
+            return {"total": 0, "results": [], "error": "OpenSearch is unavailable"}
+        return _sql_search_history(q, sku_id, source_store_id, destination_store_id, outcome_status, limit)
         
     must_clauses = []
     
@@ -109,6 +205,8 @@ def search_history(
         return {"total": total, "results": results}
     except Exception as e:
         logger.error(f"Search failed: {str(e)}")
+        if _is_sql_fallback_enabled():
+            return _sql_search_history(q, sku_id, source_store_id, destination_store_id, outcome_status, limit)
         return {"total": 0, "results": [], "error": str(e)}
 
 def search_similar_scenarios(
@@ -131,7 +229,9 @@ def search_similar_scenarios(
 def get_history_summary() -> Dict[str, Any]:
     client = get_opensearch_client()
     if not client:
-        return {"error": "OpenSearch is unavailable"}
+        if not _is_sql_fallback_enabled():
+            return {"total": 0, "results": [], "error": "OpenSearch is unavailable"}
+        return _sql_history_summary()
         
     try:
         res = client.search(
@@ -169,6 +269,8 @@ def get_history_summary() -> Dict[str, Any]:
         }
     except Exception as e:
         logger.error(f"Summary aggregation failed: {str(e)}")
+        if _is_sql_fallback_enabled():
+            return _sql_history_summary()
         return {"error": str(e)}
 
 def delete_history_document(transfer_id: str):

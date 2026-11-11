@@ -22,7 +22,8 @@ const navItems = [
   { name: 'Outcomes', to: '/outcomes', icon: Activity },
   { name: 'Historical Intelligence', to: '/history', icon: History },
   { name: 'AI Assistant', to: '/agent', icon: Bot },
-  { name: 'Recovery Workflow', to: '/workflow', icon: Workflow },
+  { name: 'Simulation', to: '/simulation', icon: Workflow },
+  { name: 'PayPal Settlement', to: '/payments', icon: CreditCard },
 ];
 
 export const Sidebar: React.FC = () => {

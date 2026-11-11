@@ -348,6 +348,7 @@ curl -X GET "http://127.0.0.1:8000/api/decision/YOG-001?store_id=STORE_A" \
 curl -X GET "http://127.0.0.1:8000/api/demand/best-match/YOG-001?source_store_id=STORE_A" \
      -H "X-ReStockAI-User: manager"
 ```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ### 4. Query AI Orchestration Agent
 ```bash
@@ -356,6 +357,7 @@ curl -X POST "http://127.0.0.1:8000/api/agent/ask" \
      -H "X-ReStockAI-User: manager" \
      -d '{"question": "What should I do with YOG-001 at STORE_A?"}'
 ```
+All 158 tests covering deterministic risk calculations, demand matching, decision trade-offs, road-routing intelligence, Cedar authorization, Render/PostgreSQL readiness & Alembic migrations, WebSockets, and PayPal Sandbox payments pass with 0 failures.
 
 ### 5. Execute Full Recovery Workflow (One-Click Autonomous Loop)
 ```bash

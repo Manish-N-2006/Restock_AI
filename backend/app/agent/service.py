@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Any, List
 import json
 import re
@@ -133,10 +134,14 @@ def ask_restock_agent(question: str) -> Dict[str, Any]:
             raise tool_err
 
     except Exception as e:
-        # Fallback for model unavailable
+        provider = os.getenv("RESTOCKAI_LLM_PROVIDER", "groq").lower()
+        if provider == "ollama" or "ollama" in str(e).lower():
+            msg = "The local ReStockAI agent is unavailable because the configured Ollama model cannot be reached or encountered an error."
+        else:
+            msg = f"The ReStockAI agent ({provider.upper()}) encountered an error: {str(e)}"
         return {
             "question": question,
-            "answer": "The local ReStockAI agent is unavailable because the configured Ollama model cannot be reached or encountered an error.",
+            "answer": msg,
             "error_detail": str(e),
             "tools_used": []
         }

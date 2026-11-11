@@ -1,6 +1,46 @@
+# Virtual Environment
 venv/
+env/
+.venv/
+
+# Python caches and bytecode
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment Variables & Secrets
 .env
-.pytest_cache/
+.env.local
+.env.*.local
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Local Databases & Scratch
 *.db
+*.sqlite
+*.sqlite3
+scratch/
+
+# Node & Frontend Build Artifacts
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+dist-ssr/
+frontend/dist-ssr/
+*.local
+
+# IDE & OS Artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+latest_tested_plan_id.txt

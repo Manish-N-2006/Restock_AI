@@ -14,7 +14,8 @@ router = APIRouter(prefix="/api/history", tags=["history"])
 @router.get("/health", response_model=OpenSearchHealthResponse, dependencies=[Depends(require_permission(Action.VIEW_HISTORY, "History"))])
 def get_health():
     client = get_opensearch_client()
-    configured = bool(os.getenv("RESTOCKAI_OPENSEARCH_HOST", "http://localhost:9200"))
+    env = os.getenv("RESTOCKAI_ENV", "development").strip().lower()
+    configured = bool(os.getenv("RESTOCKAI_OPENSEARCH_HOST", "" if env == "production" else "http://localhost:9200").strip())
     
     available = False
     if client:

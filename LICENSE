@@ -1,0 +1,58 @@
+MIT License
+
+Copyright (c) 2026 ReStockAI Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+### Third-Party Licenses & Attributions
+
+ReStockAI incorporates and integrates with the following open-source and third-party technologies:
+
+1. **PayPal REST SDK & Orders API v2**
+   - Provider: PayPal Holdings, Inc.
+   - Purpose: Real-time commercial settlement, Sandbox checkout, and server-side payment capture.
+   - URL: https://developer.paypal.com
+
+2. **FastAPI & Starlette**
+   - License: MIT License
+   - Copyright (c) 2018 Sebastián Ramírez
+   - Purpose: High-performance asynchronous backend and REST/WebSocket routing.
+
+3. **React & React DOM**
+   - License: MIT License
+   - Copyright (c) Meta Platforms, Inc. and affiliates
+   - Purpose: Reactive single-page user interface and simulation dashboard.
+
+4. **Tailwind CSS**
+   - License: MIT License
+   - Copyright (c) Tailwind Labs, Inc.
+   - Purpose: Modern utility-first styling.
+
+5. **Lucide Icons**
+   - License: ISC License
+   - Copyright (c) Lucide Contributors
+   - Purpose: Accessible vector iconography.
+
+6. **OpenStreetMap / Project OSRM**
+   - Data: © OpenStreetMap contributors (ODbL)
+   - Routing: Open Source Routing Machine (BSD 2-Clause License)
+   - Purpose: Road network distance and transit duration calculations.
+
